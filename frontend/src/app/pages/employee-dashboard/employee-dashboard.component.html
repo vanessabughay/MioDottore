@@ -1,0 +1,27 @@
+<div class="employee-dashboard">
+  <h2>Bem-vindo(a), {{ nome }}</h2>
+  <h3>Próximas Consultas</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Paciente</th>
+        <th>Horário</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let consulta of consultas">
+        <td>{{ consulta.paciente }}</td>
+        <td>{{ consulta.horario }}</td>
+        <td>{{ consulta.status }}</td>
+        <td>
+          <button (click)="confirmar(consulta.id)">Confirmar</button>
+          <button (click)="realizar(consulta.id)">Realizar</button>
+          <button (click)="cancelar(consulta.id)">Cancelar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
