@@ -1,0 +1,18 @@
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+
+export const routes: Routes = [
+  { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
+
+  { path: 'paciente', 
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/patient-dashboard/patient-dashboard.component').then(m => m.PatientDashboardComponent)
+  },
+
+  { path: 'funcionario', 
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/employee-dashboard/employee-dashboard.component').then(m => m.EmployeeDashboardComponent)
+  },
+
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
+];

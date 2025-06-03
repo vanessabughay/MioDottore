@@ -1,1 +1,1 @@
-"# MioDottore - Sistema de GestÆo Hospitalar" 
+"# MioDottore - Sistema de GestÄ†o Hospitalar" 

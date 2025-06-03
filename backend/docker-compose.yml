@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # --- BANCOS DE DADOS POSTGRESQL ---
+  db-auth:
+    image: postgres:13-alpine
+    container_name: miodottore-db-auth
+    environment:
+      POSTGRES_USER: admin_auth       
+      POSTGRES_PASSWORD: pass_auth   
+      POSTGRES_DB: auth_db        
+    volumes:
+      - pg_auth_data:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"                  
+    networks:
+      - miodottore-network
+
+  db-paciente:
+    image: postgres:13-alpine
+    container_name: miodottore-db-paciente
+    environment:
+      POSTGRES_USER: admin_paciente
+      POSTGRES_PASSWORD: pass_paciente
+      POSTGRES_DB: patient_db
+    volumes:
+      - pg_paciente_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" 
+    networks:
+      - miodottore-network
+
+  db-consulta:
+    image: postgres:13-alpine
+    container_name: miodottore-db-consulta
+    environment:
+      POSTGRES_USER: admin_consulta
+      POSTGRES_PASSWORD: pass_consulta
+      POSTGRES_DB: appointment_db
+    volumes:
+      - pg_consulta_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - miodottore-network
+
+   # --- MICROSSERVIÇOS SPRING BOOT ---
+  ms-autenticacao:
+    build:
+      context: ./ms-autenticacao/ms-autenticacao  
+      dockerfile: Dockerfile                      
+    container_name: miodottore-ms-autenticacao
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db-auth
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-auth:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: admin_auth
+      SPRING_DATASOURCE_PASSWORD: pass_auth
+    networks:
+      - miodottore-network
+
+  ms-paciente:
+    build:
+      context: ./ms-paciente/ms-paciente      
+      dockerfile: Dockerfile                    
+    container_name: miodottore-ms-paciente
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db-paciente
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-paciente:5432/patient_db
+      SPRING_DATASOURCE_USERNAME: admin_paciente
+      SPRING_DATASOURCE_PASSWORD: pass_paciente
+    networks:
+      - miodottore-network
+
+  ms-consulta-agendamento:
+    build:
+      context: ./ms-consulta-agendamento/ms-consulta-agendamento 
+      dockerfile: Dockerfile                                     
+    container_name: miodottore-ms-consulta
+    ports:
+      - "8083:8083"
+    depends_on:
+      - db-consulta
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-consulta:5432/appointment_db
+      SPRING_DATASOURCE_USERNAME: admin_consulta
+      SPRING_DATASOURCE_PASSWORD: pass_consulta
+    networks:
+      - miodottore-network
+
+  # --- API GATEWAY NODE.JS ---
+  api-gateway:
+    build: ./api-gateway
+    container_name: miodottore-api-gateway
+    ports:
+      - "4000:4000" 
+    depends_on:
+      - ms-autenticacao
+      - ms-paciente
+      - ms-consulta-agendamento
+    environment:
+      PORT: 4000 
+      MS_AUTENTICACAO_URL: http://ms-autenticacao:8081
+      MS_PACIENTE_URL: http://ms-paciente:8082
+      MS_CONSULTA_URL: http://ms-consulta-agendamento:8083
+      JWT_SECRET: "miodottore-secret-key-2024"
+    networks:
+      - miodottore-network
+
+# Volumes para persistência dos dados dos bancos
+volumes:
+  pg_auth_data:
+  pg_paciente_data:
+  pg_consulta_data:
+
+# Rede para comunicação entre os containers
+networks:
+  miodottore-network:
+    driver: bridge

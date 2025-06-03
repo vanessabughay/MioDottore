@@ -1,0 +1,38 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "cpf": "11111111111",
+      "nome": "João Paciente",
+      "email": "joao@paciente.com",
+      "senha": "123456",
+      "tipo_usuario": "PACIENTE",
+      "pontos": 10
+    },
+    {
+      "id": 2,
+      "cpf": "22222222222",
+      "nome": "Maria Paciente",
+      "email": "maria@paciente.com",
+      "senha": "123456",
+      "tipo_usuario": "PACIENTE",
+      "pontos": 5
+    },
+    {
+      "id": 3,
+      "cpf": "33333333333",
+      "nome": "Carlos Funcionario",
+      "email": "carlos@funcionario.com",
+      "senha": "admin123",
+      "tipo_usuario": "FUNCIONARIO"
+    },
+    {
+      "id": 4,
+      "cpf": "44444444444",
+      "nome": "Ana Funcionario",
+      "email": "ana@funcionario.com",
+      "senha": "admin123",
+      "tipo_usuario": "FUNCIONARIO"
+    }
+  ]
+}
