@@ -1,10 +1,66 @@
-<div class="dashboard">
-  <h2>Bem-vindo(a), {{ nome }}!</h2>
-  <p>Você tem <strong>{{ pontos }}</strong> ponto(s) disponíveis.</p>
-
-  <div class="actions">
-    <button (click)="agendarConsulta()">Agendar Consulta</button>
-    <button (click)="verConsultas()">Ver Consultas</button>
-    <button (click)="comprarPontos()">Comprar Pontos</button>
+<div class="patient-dashboard">
+  <div class="header">
+    <h2>Bem-vindo(a), {{ nome }}! Saldo de Pontos: {{ pontos }} pts</h2>
+    <div class="actions">
+      <button (click)="comprarPontos()">Comprar Pontos</button>
+      <button (click)="agendarConsulta()">Agendar Consulta</button>
+      <button (click)="logout()">Logout</button>
+    </div>
   </div>
+
+  <h3>Meus Agendamentos</h3>
+
+  <div class="filters">
+    <button (click)="filtro = 'futuros'" [class.active]="filtro === 'futuros'">
+      Futuros
+    </button>
+    <button
+      (click)="filtro = 'realizados'"
+      [class.active]="filtro === 'realizados'"
+    >
+      Realizados
+    </button>
+    <button
+      (click)="filtro = 'cancelados'"
+      [class.active]="filtro === 'cancelados'"
+    >
+      Cancelados
+    </button>
+    <button class="hist" (click)="verHistoricoPontos()">
+      Histórico de Pontos
+    </button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Especialidade</th>
+        <th>Médico</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of agendamentos">
+        <td>{{ a.data }}</td>
+        <td>{{ a.especialidade }}</td>
+        <td>{{ a.medico }}</td>
+        <td>{{ a.status }}</td>
+        <td>
+          <button
+            *ngIf="a.status === 'CRIADO'"
+            (click)="cancelarAgendamento(a.id)"
+          >
+            Cancelar
+          </button>
+          <button
+            *ngIf="a.status === 'CRIADO'"
+            (click)="fazerCheckin(a.id)"
+          >
+            Check-in
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

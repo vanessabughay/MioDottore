@@ -1,27 +1,46 @@
 <div class="employee-dashboard">
-  <h2>Bem-vindo(a), {{ nome }}</h2>
-  <h3>Próximas Consultas</h3>
+  <h2>Bem-vindo(a), {{ nome }}!</h2>
+  <div class="top-actions">
+    <button (click)="cadastrarConsulta()">Cadastrar Nova Consulta</button>
+    <button (click)="gerenciarFuncionarios()">Gerenciar Funcionários</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+
+  <h3>Consultas Agendadas (Próximas 48h)</h3>
 
   <table>
     <thead>
       <tr>
+        <th>Data/Hora</th>
+        <th>Especialidade</th>
+        <th>Médico</th>
         <th>Paciente</th>
-        <th>Horário</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let consulta of consultas">
-        <td>{{ consulta.paciente }}</td>
-        <td>{{ consulta.horario }}</td>
-        <td>{{ consulta.status }}</td>
+      <tr *ngFor="let c of consultas">
+        <td>{{ c.dataHora }}</td>
+        <td>{{ c.especialidade }}</td>
+        <td>{{ c.medico }}</td>
+        <td>{{ c.paciente }}</td>
+        <td>{{ c.codigo }}</td>
+        <td>{{ c.status }}</td>
         <td>
-          <button (click)="confirmar(consulta.id)">Confirmar</button>
-          <button (click)="realizar(consulta.id)">Realizar</button>
-          <button (click)="cancelar(consulta.id)">Cancelar</button>
+          <button *ngIf="c.status === 'CHECK-IN'" (click)="confirmarPresenca(c)">Confirmar Presença</button>
         </td>
       </tr>
     </tbody>
   </table>
+  <div class="consulta-opcoes" *ngIf="consultaSelecionada">
+    <h4>Opções para a CONSULTA (não o agendamento individual):</h4>
+    <p>
+      Consulta: {{ consultaSelecionada.especialidade }} com
+      {{ consultaSelecionada.medico }} - {{ consultaSelecionada.data }}
+    </p>
+    <p>Vagas Ocupadas: {{ consultaSelecionada.ocupacao }}</p>
+    <button (click)="cancelarConsulta()">Cancelar Consulta</button>
+    <button (click)="realizarConsulta()">Realizar Consulta</button>
+  </div>
 </div>

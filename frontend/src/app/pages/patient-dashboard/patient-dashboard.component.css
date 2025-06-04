@@ -1,32 +1,71 @@
-.dashboard {
-  max-width: 600px;
-  margin: 60px auto;
+.patient-dashboard {
+  max-width: 800px;
+  margin: 40px auto;
   padding: 20px;
-  text-align: center;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+ font-family: sans-serif;
 }
 
-.dashboard h2 {
-  margin-bottom: 12px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
 }
 
-.dashboard .actions {
-  margin-top: 24px;
+.header h2 {
+  margin: 0;
+  flex: 1;
+}
+
+.actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+}
+
+h3 {
+  text-align: center;
+  margin: 24px 0 12px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filters button.active {
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 button {
-  padding: 10px;
-  font-size: 16px;
+  padding: 6px 10px;
+  font-size: 14px;
   background-color: #1976d2;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 6px;
 }
 
 button:hover {
