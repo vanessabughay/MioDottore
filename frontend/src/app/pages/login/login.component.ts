@@ -36,8 +36,8 @@ export class LoginComponent implements OnInit {
 
     this.auth.login(email!, senha!).subscribe({
       next: (res: any) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('tipo_usuario', res.tipo_usuario);
+        // localStorage.setItem('token', res.token);
+        // localStorage.setItem('tipo_usuario', res.tipo_usuario);
 
         if (res.tipo_usuario === 'PACIENTE') {
           this.router.navigate(['/paciente']);
