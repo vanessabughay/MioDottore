@@ -52,6 +52,18 @@ export class AuthService {
     );
   }
 
+   /**
+   * Envia dados de autocadastro de paciente para o backend.
+   */
+  autocadastroPaciente(dados: any): Observable<any> {
+    const url = `${this.apiUrl}/pacientes/autocadastro`;
+    return this.http.post(url, dados).pipe(
+      catchError(() => {
+        return throwError(() => new Error('Erro ao realizar autocadastro'));
+      })
+    );
+  }
+
   
   logout(): void {
     localStorage.clear();
