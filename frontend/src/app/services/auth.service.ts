@@ -40,6 +40,19 @@ export class AuthService {
     );
   }
 
+  /**
+   * Cadastra um novo usuário na base local (json-server).
+   */
+  register(user: any): Observable<any> {
+    const url = `${this.apiUrl}/usuarios`;
+    return this.http.post(url, user).pipe(
+      catchError(() => {
+        return throwError(() => new Error('Erro ao realizar cadastro'));
+      })
+    );
+  }
+
+  
   logout(): void {
     localStorage.clear();
   }

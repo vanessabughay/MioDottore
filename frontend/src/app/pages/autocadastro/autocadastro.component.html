@@ -1,0 +1,61 @@
+<div class="register-container">
+  <h2>Criar Conta</h2>
+
+  <form [formGroup]="form" (ngSubmit)="register()">
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input id="nome" type="text" formControlName="nome" placeholder="Digite seu nome" />
+      <small *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+        Nome é obrigatório
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="cpf">CPF</label>
+      <input id="cpf" type="text" formControlName="cpf" placeholder="Digite seu CPF" />
+      <small *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">
+        CPF é obrigatório
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail" />
+      <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        E-mail inválido
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" formControlName="senha" placeholder="Digite sua senha" />
+      <small *ngIf="form.get('senha')?.invalid && form.get('senha')?.touched">
+        A senha é obrigatória
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmarSenha">Confirmar Senha</label>
+      <input id="confirmarSenha" type="password" formControlName="confirmarSenha" placeholder="Confirme sua senha" />
+      <small *ngIf="form.get('confirmarSenha')?.invalid && form.get('confirmarSenha')?.touched">
+        Confirmação é obrigatória
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo_usuario">Tipo de Usuário</label>
+      <select id="tipo_usuario" formControlName="tipo_usuario">
+        <option value="PACIENTE">Paciente</option>
+        <option value="FUNCIONARIO">Funcionário</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">Cadastrar</button>
+
+    <p>Já possui conta? <a routerLink="/login">Entrar</a></p>
+
+    <div *ngIf="error" class="error">
+      {{ error }}
+    </div>
+  </form>
+</div>

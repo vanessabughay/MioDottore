@@ -4,6 +4,8 @@ import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
 
+  { path: 'cadastro', loadComponent: () => import('./pages/autocadastro/autocadastro.component').then(m => m.AutocadastroComponent) },
+  
   { path: 'paciente', 
     canActivate: [authGuard],
     loadComponent: () => import('./pages/patient-dashboard/patient-dashboard.component').then(m => m.PatientDashboardComponent)
