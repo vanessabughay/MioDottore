@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AutocadastroComponent } from './autocadastro.component';
 
@@ -8,7 +10,7 @@ describe('AutocadastroComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AutocadastroComponent]
+      imports: [AutocadastroComponent, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
 
