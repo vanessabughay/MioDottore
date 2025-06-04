@@ -28,7 +28,7 @@
         <td>{{ c.codigo }}</td>
         <td>{{ c.status }}</td>
         <td>
-          <button *ngIf="c.status === 'CHECK-IN'" (click)="confirmarPresenca(c.id)">Confirmar Presença</button>
+          <button *ngIf="c.status === 'CHECK-IN'" (click)="confirmarPresenca(c)">Confirmar Presença</button>
         </td>
       </tr>
     </tbody>

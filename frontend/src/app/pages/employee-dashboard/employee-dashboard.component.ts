@@ -1,17 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
+
 
 @Component({
   standalone: true,
   selector: 'app-employee-dashboard',
   templateUrl: './employee-dashboard.component.html',
   styleUrls: ['./employee-dashboard.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, MatDialogModule, ModalConfirmarComparecimento]
 })
 export class EmployeeDashboardComponent implements OnInit {
   nome = '';
   consultas: any[] = [];
   consultaSelecionada: any = null;
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit() {
     // Nome fictício — pegue de sessão depois
@@ -56,8 +60,13 @@ export class EmployeeDashboardComponent implements OnInit {
     };
   }
 
-  confirmarPresenca(id: number) {
-    alert(`Presença do agendamento ${id} confirmada.`);
+  confirmarPresenca(consulta: any) {
+   const ref = this.dialog.open(ModalConfirmarComparecimento, { data: consulta });
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        alert(`Presença do agendamento ${consulta.id} confirmada.`);
+      }
+    });
   }
 
   realizarConsulta() {
