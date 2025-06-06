@@ -1,0 +1,9 @@
+<h2>Cancelar Consulta</h2>
+<p>Especialidade: {{ data.especialidade }}</p>
+<p>Médico: {{ data.medico }}</p>
+<p>Data: {{ data.data }}</p>
+<p>Vagas Ocupadas: {{ data.ocupacao }}</p>
+<div class="actions">
+  <button mat-button (click)="dialogRef.close(false)">Voltar</button>
+  <button mat-raised-button color="warn" (click)="dialogRef.close(true)">Cancelar</button>
+</div>

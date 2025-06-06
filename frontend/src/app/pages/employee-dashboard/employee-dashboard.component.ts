@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
+import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
 
 
 @Component({
@@ -9,7 +10,12 @@ import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/m
   selector: 'app-employee-dashboard',
   templateUrl: './employee-dashboard.component.html',
   styleUrls: ['./employee-dashboard.component.css'],
-  imports: [CommonModule, MatDialogModule, ModalConfirmarComparecimento]
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    ModalConfirmarComparecimento,
+    ModalCancelarConsulta
+  ]
 })
 export class EmployeeDashboardComponent implements OnInit {
   nome = '';
@@ -74,7 +80,14 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   cancelarConsulta() {
-    alert('Consulta cancelada.');
+   const ref = this.dialog.open(ModalCancelarConsulta, {
+      data: this.consultaSelecionada
+    });
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        alert('Consulta cancelada.');
+      }
+    });
   }
 
   cadastrarConsulta() {

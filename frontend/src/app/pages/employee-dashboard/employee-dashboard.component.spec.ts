@@ -5,6 +5,7 @@ import { EmployeeDashboardComponent } from './employee-dashboard.component';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
+import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
 
 class MatDialogMock {
   openSpy = jasmine.createSpy('open').and.callFake((_c: any, _d: any) => ({
@@ -57,4 +58,26 @@ describe('EmployeeDashboardComponent', () => {
     component.confirmarPresenca(consulta);
     expect(window.alert).not.toHaveBeenCalled();
   });
+
+  
+  it('should open modal when cancelarConsulta is called', () => {
+    component.cancelarConsulta();
+    expect(dialog.openSpy).toHaveBeenCalledWith(ModalCancelarConsulta, {
+      data: component.consultaSelecionada
+    });
+  });
+
+  it('should alert when cancelarConsulta modal result is true', () => {
+    spyOn(window, 'alert');
+    component.cancelarConsulta();
+    expect(window.alert).toHaveBeenCalledWith('Consulta cancelada.');
+  });
+
+  it('should not alert when cancelarConsulta modal result is false', () => {
+    dialog.openSpy.and.callFake((_c: any, _d: any) => ({ afterClosed: () => of(false) }));
+    spyOn(window, 'alert');
+    component.cancelarConsulta();
+    expect(window.alert).not.toHaveBeenCalled();
+  });
+  
 });
