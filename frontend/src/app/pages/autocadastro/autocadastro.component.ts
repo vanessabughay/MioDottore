@@ -47,7 +47,10 @@ export class AutocadastroComponent implements OnInit {
 
         this.auth.autocadastroPaciente(dados).subscribe({
 
-      next: () => {
+            next: (res) => {
+        if (res?.senhaGerada) {
+          alert(`Sua senha gerada é: ${res.senhaGerada}`);
+        }
         this.router.navigate(['/login']);
       },
       error: () => {
