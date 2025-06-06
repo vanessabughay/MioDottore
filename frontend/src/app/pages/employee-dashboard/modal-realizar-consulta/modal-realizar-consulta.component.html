@@ -1,0 +1,9 @@
+<h2>Realizar Consulta</h2>
+<p>Paciente: {{ data.paciente }}</p>
+<p>Especialidade: {{ data.especialidade }}</p>
+<p>Médico: {{ data.medico }}</p>
+<p>Data/Hora: {{ data.dataHora }}</p>
+<div class="actions">
+  <button mat-button (click)="dialogRef.close(false)">Voltar</button>
+  <button mat-raised-button color="primary" (click)="dialogRef.close(true)">Confirmar</button>
+</div>

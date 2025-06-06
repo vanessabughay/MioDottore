@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
 import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
+import { ModalRealizarConsulta } from './modal-realizar-consulta/modal-realizar-consulta.component';
 
 
 @Component({
@@ -14,7 +15,8 @@ import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-
     CommonModule,
     MatDialogModule,
     ModalConfirmarComparecimento,
-    ModalCancelarConsulta
+    ModalCancelarConsulta,
+    ModalRealizarConsulta
   ]
 })
 export class EmployeeDashboardComponent implements OnInit {
@@ -76,7 +78,14 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   realizarConsulta() {
-    alert('Consulta realizada.');
+    const ref = this.dialog.open(ModalRealizarConsulta, {
+      data: this.consultaSelecionada
+    });
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        alert('Consulta realizada.');
+      }
+    });
   }
 
   cancelarConsulta() {
