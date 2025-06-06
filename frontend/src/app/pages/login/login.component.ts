@@ -35,13 +35,11 @@ export class LoginComponent implements OnInit {
     const { email, senha } = this.form.value;
 
     this.auth.login(email!, senha!).subscribe({
-      next: (res: any) => {
-        // localStorage.setItem('token', res.token);
-        // localStorage.setItem('tipo_usuario', res.tipo_usuario);
-
-        if (res.tipo_usuario === 'PACIENTE') {
+      next: () => {
+        const tipo = this.auth.getTipoUsuario();
+        if (tipo === 'PACIENTE') {
           this.router.navigate(['/paciente']);
-        } else if (res.tipo_usuario === 'FUNCIONARIO') {
+        } else if (tipo === 'FUNCIONARIO') {
           this.router.navigate(['/funcionario']);
         } else {
           this.error = 'Tipo de usuário desconhecido.';
