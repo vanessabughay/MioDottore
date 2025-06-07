@@ -13,7 +13,7 @@ app.use(express.json());
 
 const MS_AUTENTICACAO_URL = process.env.MS_AUTENTICACAO_URL || 'http://localhost:8081';
 const MS_PACIENTE_URL = process.env.MS_PACIENTE_URL || 'http://localhost:8082';
-const MS_CONSULTA_URL = process.env.CONSULTA_URL || 'http://localhost:8083'; 
+const MS_CONSULTA_URL = process.env.MS_CONSULTA_URL || 'http://localhost:8083'; 
 const JWT_SECRET = Buffer.from(process.env.JWT_SECRET, 'base64').toString('utf8');
 
 const authenticateJWT = (req, res, next) => {

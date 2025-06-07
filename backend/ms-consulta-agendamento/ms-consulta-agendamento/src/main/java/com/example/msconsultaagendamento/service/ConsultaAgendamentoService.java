@@ -303,13 +303,13 @@ public class ConsultaAgendamentoService {
     }
     
     private String gerarCodigoConsulta(LocalDateTime dataHora) {
-        String timestamp = dataHora.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
-        return "CONS-" + timestamp + "-" + System.currentTimeMillis() % 1000;
+        String timestamp = dataHora.format(DateTimeFormatter.ofPattern("MMddHHmm"));
+        return "C" + timestamp + (System.currentTimeMillis() % 100);
     }
     
     private String gerarCodigoAgendamento(LocalDateTime dataHora) {
-        String timestamp = dataHora.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
-        return "AGEN-" + timestamp + "-" + System.currentTimeMillis() % 1000;
+        String timestamp = dataHora.format(DateTimeFormatter.ofPattern("MMddHHmm"));
+        return "A" + timestamp + (System.currentTimeMillis() % 100);
     }
     
     private ConsultaResponseDTO convertToConsultaResponseDTO(Consulta consulta) {
