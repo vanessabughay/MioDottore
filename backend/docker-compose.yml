@@ -58,6 +58,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-auth:5432/auth_db
       SPRING_DATASOURCE_USERNAME: admin_auth
       SPRING_DATASOURCE_PASSWORD: pass_auth
+      JWT_SECRET: "c2VjcmV0a2V5Zm9ybWlvZG90dG9yZWFwcGxpY2F0aW9uMjU2Yml0cw=="
     networks:
       - miodottore-network
 
@@ -108,7 +109,7 @@ services:
       MS_AUTENTICACAO_URL: http://ms-autenticacao:8081
       MS_PACIENTE_URL: http://ms-paciente:8082
       MS_CONSULTA_URL: http://ms-consulta-agendamento:8083
-      JWT_SECRET: "miodottore-secret-key-2024"
+      JWT_SECRET: "c2VjcmV0a2V5Zm9ybWlvZG90dG9yZWFwcGxpY2F0aW9uMjU2Yml0cw=="
     networks:
       - miodottore-network
 
