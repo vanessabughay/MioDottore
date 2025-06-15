@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
 import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
 import { ModalRealizarConsulta } from './modal-realizar-consulta/modal-realizar-consulta.component';
@@ -23,7 +24,7 @@ export class EmployeeDashboardComponent implements OnInit {
   nome = '';
   consultas: any[] = [];
   consultaSelecionada: any = null;
-  constructor(private dialog: MatDialog) {}
+    constructor(private dialog: MatDialog, private router: Router) {}
 
   ngOnInit() {
     // Nome fictício — pegue de sessão depois
@@ -104,7 +105,7 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   gerenciarFuncionarios() {
-    alert('Funcionalidade de gerenciamento ainda não implementada.');
+    this.router.navigate(['/funcionario/gerenciar']);
   }
 
   logout() {

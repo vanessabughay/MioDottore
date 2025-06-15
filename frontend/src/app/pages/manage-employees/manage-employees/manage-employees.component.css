@@ -1,0 +1,67 @@
+.manage-employees {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  font-family: sans-serif;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  grid-column: span 2;
+  padding: 8px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[disabled] {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.error {
+  grid-column: span 2;
+  color: #cc0000;
+}
+
+h3 {
+  margin: 24px 0 12px;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}

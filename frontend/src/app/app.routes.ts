@@ -15,6 +15,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/employee-dashboard/employee-dashboard.component').then(m => m.EmployeeDashboardComponent)
   },
-
+  { path: 'funcionario/gerenciar',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/manage-employees/manage-employees.component').then(m => m.ManageEmployeesComponent)
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
