@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,6 +49,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("erro", e.getMessage()));
         }
+    }
+
+    @GetMapping("/funcionarios")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarFuncionarios() {
+        List<UsuarioResponseDTO> funcionarios = usuarioService.listarFuncionarios();
+        return ResponseEntity.ok(funcionarios);
     }
     
     @GetMapping("/health")

@@ -15,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -90,7 +92,7 @@ public class UsuarioService {
         return response;
     }
     
-    public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO cadastroDTO) {
+    public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO cadastroDTO, String senhaGerada) {
         if (usuarioRepository.existsByCpf(cadastroDTO.getCpf())) {
             throw new RuntimeException("CPF já cadastrado");
         }
@@ -99,7 +101,6 @@ public class UsuarioService {
             throw new RuntimeException("Email já cadastrado");
         }
         
-        String senhaGerada = gerarSenhaAleatoria();
         String senhaHash = passwordEncoder.encode(senhaGerada);
         
         Usuario usuario = Usuario.builder()
@@ -130,6 +131,17 @@ public class UsuarioService {
         response.put("usuario", convertToResponseDTO(usuario));
         
         return response;
+    }
+    
+    public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO cadastroDTO) {
+        return cadastrarFuncionario(cadastroDTO, gerarSenhaAleatoria());
+    }
+
+    public List<UsuarioResponseDTO> listarFuncionarios() {
+        return usuarioRepository.findByTipoUsuario(TipoUsuario.FUNCIONARIO)
+                .stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
     
     public TokenDTO login(LoginDTO loginDTO) {

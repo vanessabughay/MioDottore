@@ -29,155 +29,522 @@ docker-compose up --build
 - **db-paciente**: localhost:5432 (PostgreSQL - Pacientes)
 - **db-consulta**: localhost:5433 (PostgreSQL - Consultas)
 
-## Endpoints da API
+## 📋 API Reference - Guia Completo para Frontend
 
-> **Nota**: Todas as requisições do frontend devem passar pelo API Gateway (porta 4000). URLs dos microsserviços diretos são apenas para referência interna, não precisa requisitar a eles.
+> **⚠️ IMPORTANTE**: Todas as requisições do frontend devem passar pelo **API Gateway (porta 4000)**. 
+> 
+> **Base URL**: `http://localhost:4000`
 
-### Rotas de Autenticação (Públicas)
+---
 
-As seguintes rotas não exigem um token JWT para serem acessadas, não vão precisar usar:
+## 🔓 **ROTAS PÚBLICAS (Sem Autenticação)**
 
--   **Login de Usuário:**
-    -   `POST /auth/login`
-    -   **Exemplo:** `POST http://localhost:4000/auth/login`
-    -   **Corpo da Requisição:** `{ "email": "seu_email", "senha": "sua_senha" }`
-    -   **Resposta:** Retorna um `TokenDTO` com o token JWT e informações do usuário em caso de sucesso.
+### 1. 🏥 Health Check
+```typescript
+// GET /gateway-health
+fetch('http://localhost:4000/gateway-health')
+  .then(response => response.json())
+  .then(data => console.log(data));
 
--   **Autocadastro de Paciente:**
-    -   `POST /auth/pacientes/autocadastro`
-    -   **Exemplo:** `POST http://localhost:4000/auth/pacientes/autocadastro`
-    -   **Corpo da Requisição:** `{ "nome": "...", "cpf": "...", "email": "...", "cep": "..." }`
-    -   **Resposta:** Retorna uma mensagem de sucesso e a senha gerada para o paciente.
+// Resposta:
+{
+  "status": "API Gateway rodando!",
+  "port": 4000
+}
+```
 
--   **Verificação de Saúde do Gateway:**
-    -   `GET /gateway-health`
-    -   **Exemplo:** `GET http://localhost:4000/gateway-health`
-    -   **Resposta:** `{ "status": "API Gateway rodando!", "port": 4000 }`
+### 2. 👤 Autocadastro de Paciente
+```typescript
+// POST /auth/pacientes/autocadastro
+const cadastroData = {
+  nome: "João Silva",
+  cpf: "12345678901",    // Apenas números
+  email: "joao@email.com",
+  cep: "01234567"        // 8 dígitos sem hífen
+};
 
--   **Buscar Consultas Disponíveis:**
-    -   `GET /consultas/disponiveis?especialidade={codigo}`
-    -   **Exemplo:** `GET http://localhost:4000/consultas/disponiveis?especialidade=Cardiologia`
-    -   **Autenticação**: ❌ Não requerida
-    -   **Parâmetros Query** (opcionais):
-        - `especialidade`: Filtrar por código da especialidade (ex: CARDIO, DERMA, etc.)
-    -   **Resposta de Sucesso** (200 OK):
-        ```json
-        [
-          {
-            "codigo": "CONS-20240116-1000-321",
-            "dataHora": "2024-01-16T10:00:00",
-            "especialidade": {
-              "codigo": "DERMA",
-              "nome": "Dermatologia"
-            },
-            "medicoCpf": "11122233344",
-            "medicoNome": "Dra. Ana Costa",
-            "valor": 180.00,
-            "vagas": 8,
-            "vagasDisponiveis": 6,
-            "status": "DISPONIVEL",
-            "createdAt": "2024-01-12T09:00:00"
-          }
-        ]
-        ```
+fetch('http://localhost:4000/auth/pacientes/autocadastro', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(cadastroData)
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Senha gerada:', data.senhaGerada);
+  // Salvar a senha para o usuário!
+});
 
-### Rotas Protegidas (Requerem Token JWT)
+// Resposta de Sucesso:
+{
+  "mensagem": "Paciente cadastrado com sucesso",
+  "senhaGerada": "1234"
+}
+```
 
-Para acessar as rotas protegidas, você vão precisar incluir o token JWT obtido no login no cabeçalho `Authorization` de cada requisição, no formato `Bearer TOKEN_JWT`.
+### 3. 🔐 Login (Paciente ou Funcionário)
+```typescript
+// POST /auth/login
+const loginData = {
+  email: "joao@email.com",
+  senha: "1234"  // Senha gerada no autocadastro ou senha do funcionário
+};
 
-**Exemplo de Cabeçalho:**
-`Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...`
+fetch('http://localhost:4000/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(loginData)
+})
+.then(response => response.json())
+.then(data => {
+  // SALVAR O TOKEN JWT!
+  localStorage.setItem('authToken', data.token);
+  localStorage.setItem('userType', data.tipoUsuario);
+  localStorage.setItem('userCpf', data.cpfUsuario);
+  localStorage.setItem('userName', data.nomeUsuario);
+});
 
-#### Rotas do Microsserviço de Autenticação (`ms-autenticacao`)
+// Resposta de Sucesso:
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "tipoUsuario": "PACIENTE", // ou "FUNCIONARIO"
+  "nomeUsuario": "João Silva",
+  "cpfUsuario": "12345678901"
+}
+```
 
-Todas as outras rotas do `ms-autenticacao` são acessadas através do prefixo `/auth` no gateway e requerem autenticação.
+### 4. 🔍 Buscar Consultas Disponíveis
+```typescript
+// GET /consultas/disponiveis
+// GET /consultas/disponiveis?especialidade=CARDIO
 
--   **Cadastro de Funcionário:**
-    -   `POST /auth/funcionarios`
-    -   **Exemplo:** `POST http://localhost:4000/auth/funcionarios`
-    -   **Corpo da Requisição:** `{ "nome": "...", "cpf": "...", "email": "...", "telefone": "..." }`
-    -   **Requer:** Token JWT de um usuário com `tipoUsuario: "FUNCIONARIO"`. (A validação do tipo de usuário é feita no API Gateway).
+// Sem filtro
+fetch('http://localhost:4000/consultas/disponiveis')
+  .then(response => response.json())
+  .then(consultas => console.log(consultas));
 
--   **Outras rotas do ms-autenticacao (se houver):**
-    -   `/[qualquer_rota_do_ms-autenticacao]`
-    -   **Exemplo:** `GET http://localhost:4000/auth/minha-rota-protegida`
+// Com filtro de especialidade
+const especialidade = 'CARDIO'; // CARDIO, DERMA, NEURO, ORTHO, PEDIA, GERAL
+fetch(`http://localhost:4000/consultas/disponiveis?especialidade=${especialidade}`)
+  .then(response => response.json())
+  .then(consultas => console.log(consultas));
 
-#### Rotas do Microsserviço de Paciente (`ms-paciente`)
+// Resposta:
+[
+  {
+    "codigo": "C12071400123",
+    "dataHora": "2025-12-07T14:00:00",
+    "especialidade": {
+      "codigo": "CARDIO",
+      "nome": "Cardiologia"
+    },
+    "medicoCpf": "98765432100",
+    "medicoNome": "Dr. Carlos Santos",
+    "valor": 250.00,
+    "vagas": 10,
+    "vagasDisponiveis": 8,
+    "status": "DISPONIVEL",
+    "createdAt": "2025-06-07T12:00:00"
+  }
+]
+```
 
-Todas as rotas do `ms-paciente` são acessadas através do prefixo `/pacientes` no gateway e requerem autenticação.
+---
 
--   **Buscar Paciente por CPF:**
-    -   `GET /pacientes/{cpf}`
-    -   **Exemplo:** `GET http://localhost:4000/pacientes/12345678901`
+## 🔒 **ROTAS PROTEGIDAS (Requerem JWT Token)**
 
--   **Buscar Transações de Pontos:**
-    -   `GET /pacientes/{cpf}/transacoes`
-    -   **Exemplo:** `GET http://localhost:4000/pacientes/12345678901/transacoes`
+> **⚠️ TODAS as requisições abaixo precisam do header:**
+> 
+> `Authorization: Bearer SEU_JWT_TOKEN`
 
--   **Comprar Pontos:**
-    -   `POST /pacientes/{cpf}/pontos/comprar`
-    -   **Exemplo:** `POST http://localhost:4000/pacientes/12345678901/pontos/comprar`
-    -   **Corpo da Requisição:** `{ "quantidadePontos": 50 }`
+### 📦 Função para criar headers autenticados:
+```typescript
+function getAuthHeaders() {
+  const token = localStorage.getItem('authToken');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+}
+```
 
--   **Verificar Saldo de Pontos:**
-    -   `GET /pacientes/{cpf}/saldo`
-    -   **Exemplo:** `GET http://localhost:4000/pacientes/12345678901/saldo`
+---
 
--   **Debitar Pontos:**
-    -   `POST /pacientes/{cpf}/pontos/debitar`
-    -   **Exemplo:** `POST http://localhost:4000/pacientes/12345678901/pontos/debitar`
-    -   **Corpo da Requisição:** `{ "quantidade": 50, "descricao": "USO EM CONSULTA" }`
+## 👨‍⚕️ **ROTAS PARA FUNCIONÁRIOS**
 
--   **Creditar Pontos:**
-    -   `POST /pacientes/{cpf}/pontos/creditar`
-    -   **Exemplo:** `POST http://localhost:4000/pacientes/12345678901/pontos/creditar`
-    -   **Corpo da Requisição:** `{ "quantidade": 20, "descricao": "ESTORNO CANCELAMENTO" }`
+### 5. 📋 Listar Funcionários
+```typescript
+// GET /auth/funcionarios
+// APENAS para usuários com tipoUsuario: "FUNCIONARIO"
 
-#### Rotas do Microsserviço de Consulta e Agendamento (`ms-consulta-agendamento`)
+fetch('http://localhost:4000/auth/funcionarios', {
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(funcionarios => console.log(funcionarios));
 
-As rotas deste microsserviço são acessadas através do prefixo `/consultas` no gateway e requerem autenticação.
+// Resposta:
+[
+  {
+    "id": 1,
+    "nome": "Dr. Carlos Santos",
+    "cpf": "98765432100",
+    "email": "carlos@miodottore.com",
+    "tipoUsuario": "FUNCIONARIO",
+    "createdAt": "2025-06-07T12:00:00"
+  }
+]
+```
 
--   **Cadastrar Consulta:**
-    -   `POST /consultas/consultas`
-    -   **Exemplo:** `POST http://localhost:4000/consultas/consultas`
-    -   **Corpo da Requisição:** `{ "dataHora": "2024-01-20T14:00:00", "especialidadeCodigo": "CARDIO", "medicoCpf": "98765432100", "valor": 250.00, "vagas": 15 }`
-    -   **Requer:** Token JWT.
+### 6. ➕ Cadastrar Funcionário
+```typescript
+// POST /auth/funcionarios
+// APENAS para usuários com tipoUsuario: "FUNCIONARIO"
 
--   **Buscar Próximas Consultas (Próximas 48h):**
-    -   `GET /consultas/proximas48h`
-    -   **Exemplo:** `GET http://localhost:4000/consultas/proximas48h`
-    -   **Requer:** Token JWT.
+const funcionarioData = {
+  nome: "Dra. Ana Costa",
+  cpf: "11122233344",
+  email: "ana@miodottore.com",
+  telefone: "11999887766"
+};
 
--   **Cancelar Consulta por Funcionário:**
-    -   `PUT /consultas/consultas/{codigoConsulta}/cancelar-funcionario`
-    -   **Exemplo:** `PUT http://localhost:4000/consultas/consultas/ABC123XYZ/cancelar-funcionario`
-    -   **Requer:** Token JWT.
+fetch('http://localhost:4000/auth/funcionarios', {
+  method: 'POST',
+  headers: getAuthHeaders(),
+  body: JSON.stringify(funcionarioData)
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Funcionário criado, senha:', data.senhaGerada);
+});
 
--   **Realizar Consulta:**
-    -   `PUT /consultas/consultas/{codigoConsulta}/realizar`
-    -   **Exemplo:** `PUT http://localhost:4000/consultas/consultas/ABC123XYZ/realizar`
-    -   **Requer:** Token JWT.
+// Resposta:
+{
+  "mensagem": "Funcionário cadastrado com sucesso",
+  "usuario": { /* dados do funcionário */ },
+  "senhaGerada": "5678"
+}
+```
 
--   **Agendar Consulta:**
-    -   `POST /consultas/agendamentos`
-    -   **Exemplo:** `POST http://localhost:4000/consultas/agendamentos`
-    -   **Corpo da Requisição:** `{ "consultaCodigo": "...", "pacienteCpf": "...", "pontosParaUsar": "..." }`
-    -   **Requer:** Token JWT.
+### 7. 🩺 Cadastrar Nova Consulta
+```typescript
+// POST /consultas/consultas
 
--   **Cancelar Agendamento por Paciente:**
-    -   `PUT /consultas/agendamentos/{codigoAgendamento}/cancelar-paciente?pacienteCpf={cpf}`
-    -   **Exemplo:** `PUT http://localhost:4000/consultas/agendamentos/AGD123XYZ/cancelar-paciente?pacienteCpf=12345678901`
-    -   **Requer:** Token JWT.
+const consultaData = {
+  dataHora: "2025-12-07T14:00:00",
+  especialidadeCodigo: "CARDIO", // CARDIO, DERMA, NEURO, ORTHO, PEDIA, GERAL
+  medicoCpf: "98765432100",      // CPF do médico cadastrado
+  valor: 250.00,
+  vagas: 10
+};
 
--   **Realizar Check-in:**
-    -   `PUT /consultas/agendamentos/{codigoAgendamento}/check-in?pacienteCpf={cpf}`
-    -   **Exemplo:** `PUT http://localhost:4000/consultas/agendamentos/AGD123XYZ/check-in?pacienteCpf=12345678901`
-    -   **Requer:** Token JWT.
+fetch('http://localhost:4000/consultas/consultas', {
+  method: 'POST',
+  headers: getAuthHeaders(),
+  body: JSON.stringify(consultaData)
+})
+.then(response => response.json())
+.then(consulta => {
+  console.log('Consulta criada com código:', consulta.codigo);
+});
+```
 
--   **Confirmar Comparecimento:**
-    -   `PUT /consultas/agendamentos/{codigoAgendamento}/confirmar-comparecimento`
-    -   **Exemplo:** `PUT http://localhost:4000/consultas/agendamentos/AGD123XYZ/confirmar-comparecimento`
-    -   **Requer:** Token JWT.
+### 8. 📅 Buscar Consultas Próximas (48h)
+```typescript
+// GET /consultas/proximas48h
+
+fetch('http://localhost:4000/consultas/proximas48h', {
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(consultas => console.log(consultas));
+```
+
+### 9. ❌ Cancelar Consulta (Funcionário)
+```typescript
+// PUT /consultas/consultas/{codigo}/cancelar-funcionario
+
+const codigoConsulta = 'C12071400123';
+
+fetch(`http://localhost:4000/consultas/consultas/${codigoConsulta}/cancelar-funcionario`, {
+  method: 'PUT',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
+### 10. ✅ Realizar Consulta
+```typescript
+// PUT /consultas/consultas/{codigo}/realizar
+
+const codigoConsulta = 'C12071400123';
+
+fetch(`http://localhost:4000/consultas/consultas/${codigoConsulta}/realizar`, {
+  method: 'PUT',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
+### 11. ✅ Confirmar Comparecimento
+```typescript
+// PUT /consultas/agendamentos/{codigo}/confirmar-comparecimento
+
+const codigoAgendamento = 'A12071400123';
+
+fetch(`http://localhost:4000/consultas/agendamentos/${codigoAgendamento}/confirmar-comparecimento`, {
+  method: 'PUT',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
+---
+
+## 👤 **ROTAS PARA PACIENTES**
+
+### 12. 👨‍💼 Buscar Dados do Paciente
+```typescript
+// GET /pacientes/{cpf}
+
+const cpfPaciente = localStorage.getItem('userCpf');
+
+fetch(`http://localhost:4000/pacientes/${cpfPaciente}`, {
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(paciente => console.log(paciente));
+
+// Resposta:
+{
+  "id": 1,
+  "cpf": "12345678901",
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "cep": "01234567",
+  "endereco": "Rua Exemplo, 123, São Paulo - SP",
+  "saldoPontos": 50,
+  "createdAt": "2025-06-07T12:00:00"
+}
+```
+
+### 13. 💰 Verificar Saldo de Pontos
+```typescript
+// GET /pacientes/{cpf}/saldo
+
+const cpfPaciente = localStorage.getItem('userCpf');
+
+fetch(`http://localhost:4000/pacientes/${cpfPaciente}/saldo`, {
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(saldo => console.log(`Saldo: ${saldo.saldoPontos} pontos`));
+
+// Resposta:
+{
+  "saldoPontos": 50
+}
+```
+
+### 14. 🛒 Comprar Pontos
+```typescript
+// POST /pacientes/{cpf}/pontos/comprar
+
+const cpfPaciente = localStorage.getItem('userCpf');
+const compraData = {
+  quantidadePontos: 50  // 1 ponto = R$ 5,00
+};
+
+fetch(`http://localhost:4000/pacientes/${cpfPaciente}/pontos/comprar`, {
+  method: 'POST',
+  headers: getAuthHeaders(),
+  body: JSON.stringify(compraData)
+})
+.then(response => response.json())
+.then(paciente => {
+  console.log('Novo saldo:', paciente.saldoPontos);
+});
+```
+
+### 15. 📋 Histórico de Transações
+```typescript
+// GET /pacientes/{cpf}/transacoes
+
+const cpfPaciente = localStorage.getItem('userCpf');
+
+fetch(`http://localhost:4000/pacientes/${cpfPaciente}/transacoes`, {
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(transacoes => console.log(transacoes));
+
+// Resposta:
+[
+  {
+    "id": 1,
+    "tipo": "ENTRADA",        // ENTRADA ou SAIDA
+    "descricao": "COMPRA DE PONTOS",
+    "valorReais": 250,
+    "quantidadePontos": 50,
+    "dataHora": "2025-06-07T12:00:00"
+  }
+]
+```
+
+### 16. 📅 Agendar Consulta
+```typescript
+// POST /consultas/agendamentos
+
+const agendamentoData = {
+  consultaCodigo: "C12071400123",    // Código obtido da lista de consultas disponíveis
+  pacienteCpf: localStorage.getItem('userCpf'),
+  pontosParaUsar: 10                 // Opcional: quantos pontos usar (desconto)
+};
+
+fetch('http://localhost:4000/consultas/agendamentos', {
+  method: 'POST',
+  headers: getAuthHeaders(),
+  body: JSON.stringify(agendamentoData)
+})
+.then(response => response.json())
+.then(agendamento => {
+  console.log('Agendamento criado:', agendamento.codigo);
+});
+
+// Resposta:
+{
+  "codigo": "A12071400123",
+  "consultaCodigo": "C12071400123",
+  "pacienteCpf": "12345678901",
+  "dataHora": "2025-12-07T14:00:00",
+  "valorFinal": 200.00,    // Valor após desconto dos pontos
+  "pontosUsados": 10,
+  "status": "CRIADO",
+  "createdAt": "2025-06-07T12:00:00"
+}
+```
+
+### 17. 🏥 Fazer Check-in
+```typescript
+// PUT /consultas/agendamentos/{codigo}/check-in?pacienteCpf={cpf}
+
+const codigoAgendamento = 'A12071400123';
+const cpfPaciente = localStorage.getItem('userCpf');
+
+fetch(`http://localhost:4000/consultas/agendamentos/${codigoAgendamento}/check-in?pacienteCpf=${cpfPaciente}`, {
+  method: 'PUT',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
+### 18. ❌ Cancelar Agendamento
+```typescript
+// PUT /consultas/agendamentos/{codigo}/cancelar-paciente?pacienteCpf={cpf}
+
+const codigoAgendamento = 'A12071400123';
+const cpfPaciente = localStorage.getItem('userCpf');
+
+fetch(`http://localhost:4000/consultas/agendamentos/${codigoAgendamento}/cancelar-paciente?pacienteCpf=${cpfPaciente}`, {
+  method: 'PUT',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
+---
+
+## 🚫 **TRATAMENTO DE ERROS**
+
+```typescript
+async function makeAuthenticatedRequest(url: string, options: RequestInit = {}) {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...getAuthHeaders(),
+        ...options.headers
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Token expirado ou inválido
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
+        throw new Error('Sessão expirada');
+      }
+      
+      if (response.status === 403) {
+        throw new Error('Acesso negado');
+      }
+      
+      const errorData = await response.json();
+      throw new Error(errorData.erro || 'Erro na requisição');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    throw error;
+  }
+}
+```
+
+---
+
+## 📊 **CÓDIGOS DE ESPECIALIDADE**
+
+```typescript
+const especialidades = {
+  CARDIO: 'Cardiologia',
+  DERMA: 'Dermatologia',
+  NEURO: 'Neurologia',
+  ORTHO: 'Ortopedia',
+  PEDIA: 'Pediatria',
+  GERAL: 'Clínica Geral'
+};
+```
+
+---
+
+## 🎯 **STATUS DOS AGENDAMENTOS**
+
+```typescript
+enum StatusAgendamento {
+  CRIADO = 'CRIADO',
+  CHECK_IN = 'CHECK_IN',
+  COMPARECEU = 'COMPARECEU',
+  FALTOU = 'FALTOU',
+  CANCELADO_PACIENTE = 'CANCELADO_PACIENTE',
+  CANCELADO_SISTEMA = 'CANCELADO_SISTEMA'
+}
+```
+
+---
+
+## ⚠️ **REGRAS IMPORTANTES**
+
+1. **CPF**: Sempre apenas números (sem pontos/hífens)
+2. **CEP**: 8 dígitos sem hífen
+3. **Tokens JWT**: Válidos por 24 horas
+4. **Pontos**: 1 ponto = R$ 5,00
+5. **Check-in**: Permitido até 48h antes da consulta
+6. **Cancelamento de consulta**: Funcionário só pode cancelar se menos de 50% das vagas estiverem ocupadas
+
+---
+
+## 🔄 **FLUXO TÍPICO DE USO**
+
+### Para Pacientes:
+1. Autocadastro → 2. Login → 3. Ver consultas disponíveis → 4. Comprar pontos (opcional) → 5. Agendar consulta → 6. Check-in → 7. Aguardar confirmação do funcionário
+
+### Para Funcionários:
+1. Login → 2. Cadastrar consultas → 3. Ver agendamentos → 4. Confirmar comparecimentos → 5. Cancelar consultas se necessário
 
 ### Considerações de Segurança (Rotas Internas)
 
