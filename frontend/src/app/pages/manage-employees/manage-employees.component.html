@@ -8,7 +8,7 @@
     </div>
     <div class="form-group">
       <label>CPF</label>
-      <input type="text" formControlName="cpf">
+      <input type="text" formControlName="cpf" mask="000.000.000-00">
     </div>
     <div class="form-group">
       <label>E-mail</label>
@@ -16,9 +16,10 @@
     </div>
     <div class="form-group">
       <label>Telefone</label>
-      <input type="text" formControlName="telefone">
+      <input type="text" formControlName="telefone" mask="(00) 00000-0000">
     </div>
-    <button type="submit" [disabled]="form.invalid">Cadastrar</button>
+    <button type="submit" [disabled]="form.invalid">{{ selectedCpf ? 'Atualizar' : 'Cadastrar' }}</button>
+    <div *ngIf="success" class="success">{{ success }}</div>
     <div *ngIf="error" class="error">{{ error }}</div>
   </form>
 
@@ -30,6 +31,7 @@
         <th>CPF</th>
         <th>E-mail</th>
         <th>Criado em</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -38,6 +40,10 @@
         <td>{{ f.cpf }}</td>
         <td>{{ f.email }}</td>
         <td>{{ f.createdAt | date:'short' }}</td>
+        <td>
+          <button type="button" (click)="editarFuncionario(f)">Editar</button>
+          <button type="button" (click)="inativarFuncionario(f.cpf)">Inativar</button>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
 import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
 import { ModalRealizarConsulta } from './modal-realizar-consulta/modal-realizar-consulta.component';
-
+import { ConsultationService } from '../../services/consultation.service';
 
 @Component({
   standalone: true,
@@ -15,53 +15,29 @@ import { ModalRealizarConsulta } from './modal-realizar-consulta/modal-realizar-
   imports: [
     CommonModule,
     MatDialogModule,
-    ModalConfirmarComparecimento,
-    ModalCancelarConsulta,
-    ModalRealizarConsulta
+    
   ]
 })
 export class EmployeeDashboardComponent implements OnInit {
-  nome = '';
+  nome: string = '';
   consultas: any[] = [];
   consultaSelecionada: any = null;
-    constructor(private dialog: MatDialog, private router: Router) {}
 
-  ngOnInit() {
-    // Nome fictício — pegue de sessão depois
-    this.nome = localStorage.getItem('nome') || 'Funcionário';
+  constructor(
+    private dialog: MatDialog,
+    private router: Router,
+    private consultationService: ConsultationService
+  ) {}
 
-    // Simulação de consultas
-    this.consultas = [
-      {
-        id: 1,
-        dataHora: '10/08/2025 09:00',
-        especialidade: 'Cardiologia',
-        medico: 'Dr. House',
-        paciente: 'Ana Silva',
-        codigo: 'AGD123',
-        status: 'CHECK-IN'
-      },
-      {
-        id: 2,
-        dataHora: '10/08/2025 10:00',
-        especialidade: 'Cardiologia',
-        medico: 'Dr. House',
-        paciente: 'Bruno Costa',
-        codigo: 'AGD124',
-        status: 'CRIADO'
-      },
-      {
-        id: 3,
-        dataHora: '11/08/2025 11:00',
-        especialidade: 'Pediatria',
-        medico: 'Dra. Grey',
-        paciente: 'Carlos Lima',
-        codigo: 'AGD125',
-        status: 'CHECK-IN'
-      }
-    ];
+  ngOnInit(): void {
+    // Nome fictício — depois integrar com sistema de login
+    this.nome = localStorage.getItem('nome') ?? 'Funcionário';
 
+    this.loadConsultas();
+
+    // Apenas para teste; remova em produção
     this.consultaSelecionada = {
+      codigo: 'CONSULTA123',
       especialidade: 'Cardiologia',
       medico: 'Dr. House',
       data: '10/08/2025',
@@ -69,46 +45,59 @@ export class EmployeeDashboardComponent implements OnInit {
     };
   }
 
-  confirmarPresenca(consulta: any) {
-   const ref = this.dialog.open(ModalConfirmarComparecimento, { data: consulta });
+  loadConsultas(): void {
+    this.consultationService.listarProximas().subscribe({
+      next: (res) => (this.consultas = res),
+      error: () => (this.consultas = [])
+    });
+  }
+
+  confirmarPresenca(consulta: any): void {
+    const ref = this.dialog.open(ModalConfirmarComparecimento, { data: consulta });
     ref.afterClosed().subscribe(result => {
       if (result) {
-        alert(`Presença do agendamento ${consulta.id} confirmada.`);
+        this.consultationService
+          .confirmarComparecimento(consulta.codigo)
+          .subscribe(() => this.loadConsultas());
       }
     });
   }
 
-  realizarConsulta() {
+  realizarConsulta(): void {
     const ref = this.dialog.open(ModalRealizarConsulta, {
       data: this.consultaSelecionada
     });
     ref.afterClosed().subscribe(result => {
       if (result) {
-        alert('Consulta realizada.');
+        this.consultationService
+          .realizarConsulta(this.consultaSelecionada.codigo)
+          .subscribe(() => this.loadConsultas());
       }
     });
   }
 
-  cancelarConsulta() {
-   const ref = this.dialog.open(ModalCancelarConsulta, {
+  cancelarConsulta(): void {
+    const ref = this.dialog.open(ModalCancelarConsulta, {
       data: this.consultaSelecionada
     });
     ref.afterClosed().subscribe(result => {
       if (result) {
-        alert('Consulta cancelada.');
+        this.consultationService
+          .cancelarConsulta(this.consultaSelecionada.codigo)
+          .subscribe(() => this.loadConsultas());
       }
     });
   }
 
-  cadastrarConsulta() {
+  cadastrarConsulta(): void {
     alert('Funcionalidade de cadastro ainda não implementada.');
   }
 
-  gerenciarFuncionarios() {
+  gerenciarFuncionarios(): void {
     this.router.navigate(['/funcionario/gerenciar']);
   }
 
-  logout() {
+  logout(): void {
     alert('Logout realizado.');
   }
 }

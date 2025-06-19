@@ -50,6 +50,11 @@ button[disabled] {
   color: #cc0000;
 }
 
+.success {
+  grid-column: span 2;
+  color: #0a8800;
+}
+
 h3 {
   margin: 24px 0 12px;
   text-align: center;
