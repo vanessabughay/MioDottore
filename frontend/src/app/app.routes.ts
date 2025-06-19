@@ -11,7 +11,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/patient-dashboard/patient-dashboard.component').then(m => m.PatientDashboardComponent)
   },
 
-  { path: 'funcionario', 
+  { path: 'funcionario', pathMatch: 'full',
+
     canActivate: [authGuard],
     loadComponent: () => import('./pages/employee-dashboard/employee-dashboard.component').then(m => m.EmployeeDashboardComponent)
   },
