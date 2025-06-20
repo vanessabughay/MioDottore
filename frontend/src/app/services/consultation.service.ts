@@ -40,9 +40,13 @@ export class ConsultationService {
    * Confirma comparecimento de um agendamento
    */
   confirmarComparecimento(codigoAgendamento: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/consultas/agendamentos/${codigoAgendamento}/confirmar`, {}, {
-      headers: this.getAuthHeaders()
-    });
+        return this.http.put(
+      `${this.apiUrl}/consultas/agendamentos/${codigoAgendamento}/confirmar-comparecimento`,
+      {},
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
   }
 
   /**
@@ -63,7 +67,9 @@ export class ConsultationService {
     return this.http.put(
       `${this.apiUrl}/consultas/consultas/${codigoConsulta}/realizar`,
       {},
-      { headers: this.getAuthHeaders() }
+      {
+        headers: this.getAuthHeaders()
+      }
     );
   }
 
