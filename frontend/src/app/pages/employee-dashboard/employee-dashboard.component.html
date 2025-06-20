@@ -22,7 +22,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let c of consultas">
-        <td>{{ c.dataHora }}</td>
+        <td>{{ c.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ c.especialidade }}</td>
         <td>{{ c.medico }}</td>
         <td>{{ c.paciente }}</td>
@@ -36,16 +36,31 @@
     </tbody>
   </table>
 
-  <div class="consulta-opcoes" *ngIf="consultaSelecionada">
-    <h4>Consulta Selecionada (modelo):</h4>
-    <p>
-      {{ consultaSelecionada.especialidade }} com
-      {{ consultaSelecionada.medico }} –
-      {{ consultaSelecionada.data }}
-    </p>
-    <p>Vagas Ocupadas: {{ consultaSelecionada.ocupacao }}</p>
+  <div class="consulta-opcoes" *ngIf="consultasDisponiveis.length">
+    <label for="consultaSelect">Selecione uma consulta:</label>
+    <select id="consultaSelect" (change)="onSelectChange($event)">
+  <option value="">-- Selecione --</option>
+  <option *ngFor="let c of consultasDisponiveis" [value]="c.codigo">
+    {{ c.especialidade.nome }} - {{ c.medicoNome }} - {{ c.dataHora | date:'dd/MM/yyyy HH:mm' }}
 
-    <button (click)="cancelarConsulta()">Cancelar Consulta</button>
-    <button (click)="realizarConsulta()">Realizar Consulta</button>
+  </option>
+</select>
+
+
+    <div *ngIf="consultaSelecionada">
+      <h4>Consulta Selecionada:</h4>
+      <p>
+        {{ consultaSelecionada.especialidade.nome }} com
+        {{ consultaSelecionada.medicoNome }} –
+        {{ consultaSelecionada.dataHora | date:'short' }}
+      </p>
+      <p>
+        Vagas Ocupadas:
+        {{ consultaSelecionada.vagas - consultaSelecionada.vagasDisponiveis }}/{{ consultaSelecionada.vagas }}
+      </p>
+
+      <button (click)="cancelarConsulta()">Cancelar Consulta</button>
+      <button (click)="realizarConsulta()">Realizar Consulta</button>
+    </div>
   </div>
 </div>

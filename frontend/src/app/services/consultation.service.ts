@@ -29,6 +29,13 @@ export class ConsultationService {
     });
   }
 
+  listarDisponiveis(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/consultas/disponiveis`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
   /**
    * Confirma comparecimento de um agendamento
    */
@@ -52,6 +59,13 @@ export class ConsultationService {
    */
   realizarConsulta(codigoConsulta: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/consultas/${codigoConsulta}/realizar`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
+  cadastrarConsulta(dados: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/consultas/consultas`, dados, {
       headers: this.getAuthHeaders()
     });
   }

@@ -21,7 +21,9 @@ import { ConsultationService } from '../../services/consultation.service';
 export class EmployeeDashboardComponent implements OnInit {
   nome: string = '';
   consultas: any[] = [];
+  consultasDisponiveis: any[] = [];
   consultaSelecionada: any = null;
+  value: number = 0.0;
 
   constructor(
     private dialog: MatDialog,
@@ -29,20 +31,14 @@ export class EmployeeDashboardComponent implements OnInit {
     private consultationService: ConsultationService
   ) {}
 
+
   ngOnInit(): void {
     // Nome fictício — depois integrar com sistema de login
     this.nome = localStorage.getItem('nome') ?? 'Funcionário';
 
     this.loadConsultas();
 
-    // Apenas para teste; remova em produção
-    this.consultaSelecionada = {
-      codigo: 'CONSULTA123',
-      especialidade: 'Cardiologia',
-      medico: 'Dr. House',
-      data: '10/08/2025',
-      ocupacao: 'X/Y'
-    };
+    this.loadConsultasDisponiveis();
   }
 
   loadConsultas(): void {
@@ -50,6 +46,18 @@ export class EmployeeDashboardComponent implements OnInit {
       next: (res) => (this.consultas = res),
       error: () => (this.consultas = [])
     });
+  }
+
+
+loadConsultasDisponiveis(): void {
+    this.consultationService.listarDisponiveis().subscribe({
+      next: (res) => (this.consultasDisponiveis = res),
+      error: () => (this.consultasDisponiveis = [])
+    });
+  }
+
+  selecionarConsulta(codigo: string): void {
+    this.consultaSelecionada = this.consultasDisponiveis.find(c => c.codigo === codigo);
   }
 
   confirmarPresenca(consulta: any): void {
@@ -90,7 +98,7 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   cadastrarConsulta(): void {
-    alert('Funcionalidade de cadastro ainda não implementada.');
+    this.router.navigate(['/funcionario/cadastrar-consulta']);
   }
 
   gerenciarFuncionarios(): void {
@@ -100,4 +108,11 @@ export class EmployeeDashboardComponent implements OnInit {
   logout(): void {
     alert('Logout realizado.');
   }
+
+  onSelectChange(event: Event): void {
+  const target = event.target as HTMLSelectElement;
+  const codigoSelecionado = target.value;
+  this.selecionarConsulta(codigoSelecionado);
+}
+
 }

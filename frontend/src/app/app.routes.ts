@@ -20,5 +20,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/manage-employees/manage-employees.component').then(m => m.ManageEmployeesComponent)
   },
+  {
+    path: 'funcionario/cadastrar-consulta',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/create-consultation/create-consultation.component').then(m => m.CreateConsultationComponent)
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
