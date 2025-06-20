@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { ModalConfirmarComparecimento } from './modal-confirmar-comparecimento/modal-confirmar-comparecimento.component';
 import { ModalCancelarConsulta } from './modal-cancelar-consulta/modal-cancelar-consulta.component';
 import { ModalRealizarConsulta } from './modal-realizar-consulta/modal-realizar-consulta.component';
@@ -28,7 +29,8 @@ export class EmployeeDashboardComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private consultationService: ConsultationService
+    private consultationService: ConsultationService,
+    private auth: AuthService
   ) {}
 
 
@@ -106,7 +108,9 @@ loadConsultasDisponiveis(): void {
   }
 
   logout(): void {
-    alert('Logout realizado.');
+    this.auth.logout();
+    alert('Logoff realizado com sucesso');
+    this.router.navigate(['/login']);
   }
 
   onSelectChange(event: Event): void {

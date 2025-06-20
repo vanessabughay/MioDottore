@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
-import { NgxMaskDirective } from 'ngx-mask';
+import { Router } from '@angular/router';
+
 
 @Component({
   standalone: true,
   selector: 'app-manage-employees',
   templateUrl: './manage-employees.component.html',
   styleUrls: ['./manage-employees.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class ManageEmployeesComponent implements OnInit {
   funcionarios: any[] = [];
@@ -18,14 +19,24 @@ export class ManageEmployeesComponent implements OnInit {
   selectedCpf: string | undefined;
   success: string = '';
 
-  constructor(private fb: FormBuilder, private employeeService: EmployeeService) {}
+   get invalidFields(): string[] {
+    const fields: string[] = [];
+    const controls = this.form.controls;
+    if (controls['nome']?.invalid) fields.push('Nome');
+    if (controls['cpf']?.invalid) fields.push('CPF');
+    if (controls['email']?.invalid) fields.push('E-mail');
+    if (controls['telefone']?.invalid) fields.push('Telefone');
+    return fields;
+  }
+
+  constructor(private fb: FormBuilder, private employeeService: EmployeeService, private router: Router) {}
 
   ngOnInit() {
     this.form = this.fb.group({
       nome: ['', Validators.required],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      telefone: ['', Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/)]
+      telefone: ['', Validators.pattern(/^\d{11}$/)]
     });
     this.loadFuncionarios();
   }
@@ -40,8 +51,18 @@ export class ManageEmployeesComponent implements OnInit {
   criarFuncionario() {
     if (this.form.invalid) return;
 
+    
+
+     const { nome, cpf, email, telefone } = this.form.value;
+    const payload = {
+      nome,
+      cpf: cpf.replace(/\D/g, ''),
+      email,
+      telefone: telefone ? telefone.replace(/\D/g, '') : ''
+    };
+
      if (this.selectedCpf) {
-      this.employeeService.atualizarFuncionario(this.selectedCpf, this.form.value).subscribe({
+      this.employeeService.atualizarFuncionario(this.selectedCpf, payload).subscribe({
         next: () => {
           this.success = 'Funcionário atualizado com sucesso.';
           this.resetForm();
@@ -49,8 +70,11 @@ export class ManageEmployeesComponent implements OnInit {
         error: () => this.error = 'Erro ao atualizar funcionário.'
       });
     } else {
-      this.employeeService.criarFuncionario(this.form.value).subscribe({
-        next: () => {
+      this.employeeService.criarFuncionario(payload).subscribe({
+        next: (res) => {
+          if (res?.senhaGerada) {
+            alert(`Senha do funcionário: ${res.senhaGerada}`);
+          }
           this.success = 'Funcionário criado com sucesso.';
           this.resetForm();
         },
@@ -83,5 +107,9 @@ export class ManageEmployeesComponent implements OnInit {
     this.form.reset();
     this.selectedCpf = undefined;
     this.loadFuncionarios();
+  }
+
+   voltar() {
+    this.router.navigate(['/funcionario']);
   }
 }

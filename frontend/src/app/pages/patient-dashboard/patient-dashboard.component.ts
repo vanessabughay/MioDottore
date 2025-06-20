@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   standalone: true,
@@ -15,7 +16,7 @@ export class PatientDashboardComponent implements OnInit {
   filtro = 'futuros';
   agendamentos: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   ngOnInit() {
   // Dados simulados
@@ -67,6 +68,8 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   logout() {
-    alert('Logout realizado.');
+    this.auth.logout();
+    alert('Logoff realizado com sucesso');
+    this.router.navigate(['/login']);
   }
 }
