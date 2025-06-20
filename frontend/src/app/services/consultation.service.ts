@@ -24,7 +24,7 @@ export class ConsultationService {
    * Lista consultas agendadas para as próximas 48h
    */
   listarProximas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/consultas/proximas`, {
+    return this.http.get<any[]>(`${this.apiUrl}/consultas/proximas48h`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -49,18 +49,22 @@ export class ConsultationService {
    * Cancela uma consulta
    */
   cancelarConsulta(codigoConsulta: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/consultas/${codigoConsulta}/cancelar`, {}, {
-      headers: this.getAuthHeaders()
-    });
+    return this.http.put(
+      `${this.apiUrl}/consultas/consultas/${codigoConsulta}/cancelar-funcionario`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
   }
 
   /**
    * Marca consulta como realizada
    */
   realizarConsulta(codigoConsulta: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/consultas/${codigoConsulta}/realizar`, {}, {
-      headers: this.getAuthHeaders()
-    });
+    return this.http.put(
+      `${this.apiUrl}/consultas/consultas/${codigoConsulta}/realizar`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
   }
 
 

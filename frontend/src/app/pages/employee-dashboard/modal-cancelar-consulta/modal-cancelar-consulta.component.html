@@ -1,10 +1,12 @@
 <h2 mat-dialog-title>Cancelar Consulta</h2>
 
 <mat-dialog-content>
-  <p><strong>Especialidade:</strong> {{ data.especialidade }}</p>
-  <p><strong>Médico:</strong> {{ data.medico }}</p>
-  <p><strong>Data:</strong> {{ data.data }}</p>
-  <p><strong>Vagas Ocupadas:</strong> {{ data.ocupacao }}</p>
+  <p><strong>Especialidade:</strong> {{ data.especialidade?.nome }}</p>
+  <p><strong>Médico:</strong> {{ data.medicoNome }}</p>
+  <p><strong>Data:</strong> {{ data.dataHora | date:'dd/MM/yyyy HH:mm' }}</p>
+  <p><strong>Vagas Ocupadas:</strong>
+    {{ data.vagas - data.vagasDisponiveis }} / {{ data.vagas }}
+  </p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

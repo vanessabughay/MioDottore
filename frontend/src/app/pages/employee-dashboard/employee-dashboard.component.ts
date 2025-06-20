@@ -94,7 +94,11 @@ loadConsultasDisponiveis(): void {
       if (result) {
         this.consultationService
           .cancelarConsulta(this.consultaSelecionada.codigo)
-          .subscribe(() => this.loadConsultas());
+          .subscribe(() => {
+            this.loadConsultas();
+            this.loadConsultasDisponiveis();
+            this.consultaSelecionada = null;
+          });
       }
     });
   }
