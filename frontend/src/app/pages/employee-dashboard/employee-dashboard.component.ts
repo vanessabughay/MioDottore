@@ -98,6 +98,7 @@ loadConsultasDisponiveis(): void {
       }
     });
   }
+    
 
   cadastrarConsulta(): void {
     this.router.navigate(['/funcionario/cadastrar-consulta']);
