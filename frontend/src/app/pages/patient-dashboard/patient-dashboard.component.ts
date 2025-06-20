@@ -7,6 +7,7 @@ import { ConsultationService } from '../../services/consultation.service';
 import { ModalCancelarAgendamento } from './modal-cancelar-agendamento/modal-cancelar-agendamento.component';
 import { ModalComprarPontos } from './modal-comprar-pontos/modal-comprar-pontos.component';
 import { ModalCheckIn } from './modal-check-in/modal-check-in.component';
+import { PatientServiceService } from '../../services/patient.service.service';
 
 @Component({
   standalone: true,
@@ -23,16 +24,20 @@ export class PatientDashboardComponent implements OnInit {
   cpf = localStorage.getItem('cpf') || '';
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private auth: AuthService,
     private dialog: MatDialog,
-    private consultaService: ConsultationService
+    private consultaService: ConsultationService,
+    private patientService: PatientServiceService
   ) {}
 
   ngOnInit() {
-  // Dados simulados
+    // Dados simulados
     this.nome = localStorage.getItem('nome') || 'Paciente';
-    this.pontos = Number(localStorage.getItem('pontos')) || 0;
+    this.patientService.getSaldo(this.cpf).subscribe({
+      next: (res) => (this.pontos = res.saldoPontos),
+      error: () => (this.pontos = 0)
+    });
 
     this.agendamentos = [
       {
@@ -67,7 +72,9 @@ export class PatientDashboardComponent implements OnInit {
     const ref = this.dialog.open(ModalComprarPontos);
     ref.afterClosed().subscribe(qtd => {
       if (qtd) {
-        this.pontos += Number(qtd);
+        this.patientService
+          .comprarPontos(this.cpf, Number(qtd))
+          .subscribe(res => (this.pontos = res.saldoPontos));
       }
     });
   }
