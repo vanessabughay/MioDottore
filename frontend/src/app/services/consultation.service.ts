@@ -69,4 +69,34 @@ export class ConsultationService {
       headers: this.getAuthHeaders()
     });
   }
+
+  buscarDisponiveis(especialidade?: string): Observable<any[]> {
+    let url = `${this.apiUrl}/consultas/disponiveis`;
+    if (especialidade) {
+      url += `?especialidade=${especialidade}`;
+    }
+    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() });
+  }
+
+  agendarConsulta(dados: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/consultas/agendamentos`, dados, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  cancelarAgendamento(codigo: string, cpf: string): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/consultas/agendamentos/${codigo}/cancelar-paciente?pacienteCpf=${cpf}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  realizarCheckin(codigo: string, cpf: string): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/consultas/agendamentos/${codigo}/check-in?pacienteCpf=${cpf}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

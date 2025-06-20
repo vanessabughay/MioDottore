@@ -25,6 +25,9 @@ export class AuthService {
         if (res.nomeUsuario) {
           localStorage.setItem('nome', res.nomeUsuario);
         }
+        if (res.cpfUsuario) {
+          localStorage.setItem('cpf', res.cpfUsuario);
+        }
         return res;
       }),
       catchError(() => {

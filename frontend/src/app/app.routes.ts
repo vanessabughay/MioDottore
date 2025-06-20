@@ -6,9 +6,14 @@ export const routes: Routes = [
 
   { path: 'cadastro', loadComponent: () => import('./pages/autocadastro/autocadastro.component').then(m => m.AutocadastroComponent) },
   
-  { path: 'paciente', 
+  { path: 'paciente',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/patient-dashboard/patient-dashboard.component').then(m => m.PatientDashboardComponent)
+  },
+  {
+    path: 'paciente/agendar',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/schedule-consultation/schedule-consultation.component').then(m => m.ScheduleConsultationComponent)
   },
 
   { path: 'funcionario', pathMatch: 'full',

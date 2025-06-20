@@ -1,0 +1,43 @@
+<div class="schedule-consultation">
+  <div class="header">
+    <h2>Agendar Nova Consulta</h2>
+    <button type="button" (click)="voltar()">Voltar ao Painel</button>
+  </div>
+
+  <form [formGroup]="form" class="filters" (ngSubmit)="loadConsultas()">
+    <div class="form-group">
+      <label>Especialidade:</label>
+      <input formControlName="especialidade" />
+    </div>
+    <button type="submit">Buscar</button>
+    <div class="form-group">
+      <label>Médico:</label>
+      <input formControlName="medico" />
+    </div>
+    <button type="submit">Buscar</button>
+  </form>
+
+  <h3>Consultas Disponíveis:</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Especialidade</th>
+        <th>Médico</th>
+        <th>Valor</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of consultas">
+        <td>{{ c.dataHora.split('T')[0] }}</td>
+        <td>{{ c.dataHora.split('T')[1].substring(0,5) }}</td>
+        <td>{{ c.especialidadeNome }}</td>
+        <td>{{ c.medicoNome }}</td>
+        <td>R$ {{ c.valor }}</td>
+        <td><button (click)="agendar(c)">Agendar</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,7 @@
+<h2>Confirmar Check-in</h2>
+<p>Confirma seu check-in para a consulta de {{ data.especialidade }} com {{ data.medico }} em {{ data.data }}?</p>
+<p><em>Isso indica que você comparecerá</em></p>
+<div class="actions">
+  <button mat-button (click)="dialogRef.close(false)">NÃO</button>
+  <button mat-raised-button color="primary" (click)="dialogRef.close(true)">SIM, FAZER CHECK-IN</button>
+</div>
