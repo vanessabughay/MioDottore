@@ -8,6 +8,7 @@ import { ModalCancelarAgendamento } from './modal-cancelar-agendamento/modal-can
 import { ModalComprarPontos } from './modal-comprar-pontos/modal-comprar-pontos.component';
 import { ModalCheckIn } from './modal-check-in/modal-check-in.component';
 import { PatientServiceService } from '../../services/patient.service.service';
+import { ModalHistoricoPontos } from './modal-historico-pontos/modal-historico-pontos.component';
 
 @Component({
   standalone: true,
@@ -69,7 +70,7 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   verHistoricoPontos() {
-    alert('Funcionalidade em construção.');
+    this.dialog.open(ModalHistoricoPontos);
   }
   cancelarAgendamento(ag: any) {
     const ref = this.dialog.open(ModalCancelarAgendamento, { data: ag });

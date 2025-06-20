@@ -20,6 +20,15 @@ export interface PacienteResponseDTO {
   updatedAt: string;
 }
 
+export interface TransacaoPontosResponseDTO {
+  id: number;
+  tipo: string;
+  descricao: string;
+  valorReais: number | null;
+  quantidadePontos: number;
+  dataHora: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,6 +53,12 @@ export class PatientServiceService {
   comprarPontos(cpf: string, quantidade: number): Observable<PacienteResponseDTO> {
     const payload = { quantidadePontos: quantidade };
     return this.http.post<PacienteResponseDTO>(`${this.apiUrl}/pacientes/${cpf}/pontos/comprar`, payload, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getTransacoes(cpf: string): Observable<TransacaoPontosResponseDTO[]> {
+    return this.http.get<TransacaoPontosResponseDTO[]>(`${this.apiUrl}/pacientes/${cpf}/transacoes`, {
       headers: this.getAuthHeaders()
     });
   }
