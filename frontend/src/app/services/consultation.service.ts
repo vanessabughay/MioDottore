@@ -35,6 +35,13 @@ export class ConsultationService {
     });
   }
 
+  listarAgendamentosPaciente(cpf: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/consultas/agendamentos/paciente/${cpf}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
 
   /**
    * Confirma comparecimento de um agendamento

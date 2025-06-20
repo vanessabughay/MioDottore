@@ -32,36 +32,25 @@ export class PatientDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Dados simulados
+
     this.nome = localStorage.getItem('nome') || 'Paciente';
     this.patientService.getSaldo(this.cpf).subscribe({
-      next: (res) => (this.pontos = res.saldoPontos),
+      next: res => (this.pontos = res.saldoPontos),
       error: () => (this.pontos = 0)
     });
 
-    this.agendamentos = [
-      {
-        id: 1,
-        data: '10/08/2025',
-        especialidade: 'Cardiologia',
-        medico: 'Dr. House',
-        status: 'CRIADO'
+    this.consultaService.listarAgendamentosPaciente(this.cpf).subscribe({
+      next: res => {
+        this.agendamentos = res.map((a: any) => ({
+          id: a.codigo,
+          data: a.consulta.dataHora.split('T')[0],
+          especialidade: a.consulta.especialidade.nome,
+          medico: a.consulta.medicoNome,
+          status: a.status
+        }));
       },
-      {
-        id: 2,
-        data: '05/07/2025',
-        especialidade: 'Pediatria',
-        medico: 'Dra. Grey',
-        status: 'REALIZADO'
-      },
-      {
-        id: 3,
-        data: '01/06/2025',
-        especialidade: 'Dermatologia',
-        medico: 'Dr. Who',
-        status: 'CANCELADO'
-      }
-    ];
+      error: () => (this.agendamentos = [])
+    });
   }
 
   agendarConsulta() {
