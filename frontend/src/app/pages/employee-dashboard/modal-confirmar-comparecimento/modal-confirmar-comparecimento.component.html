@@ -1,9 +1,13 @@
-<h2>Confirmar Presença</h2>
-<p>Paciente: {{ data.paciente }}</p>
-<p>Consulta: {{ data.especialidade }} com {{ data.medico }}</p>
-<p>Data/Hora: {{ data.dataHora }}</p>
-<p>Código: {{ data.codigo }}</p>
-<div class="actions">
-  <button mat-button (click)="dialogRef.close(false)">CANCELAR</button>
-  <button mat-raised-button color="primary" (click)="dialogRef.close(true)">CONFIRMAR</button>
+<div class="modal">
+  <h2 mat-dialog-title>Confirmar Presença</h2>
+  <mat-dialog-content>
+    <p>Paciente: {{ data.paciente }}</p>
+    <p>Consulta: {{ data.especialidade }} com {{ data.medico }}</p>
+    <p>Data/Hora: {{ data.dataHora }}</p>
+    <p>Código: {{ data.codigo }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close(false)">CANCELAR</button>
+    <button mat-raised-button color="primary" (click)="dialogRef.close(true)">CONFIRMAR</button>
+  </mat-dialog-actions>
 </div>

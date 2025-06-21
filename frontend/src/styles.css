@@ -22,6 +22,19 @@ html, body {
   font-size: 14px;
 }
 
+.modal p {
+  margin-bottom: 12px;
+}
+
+.modal input,
+.modal select,
+.modal textarea,
+.modal .mat-form-field {
+  margin-bottom: 12px;
+  display: block;
+  width: 100%;
+}
+
 .modal .mat-dialog-actions button[disabled] {
   background-color: #ccc;
   cursor: not-allowed;
