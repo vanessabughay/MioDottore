@@ -66,7 +66,7 @@ export class PatientDashboardComponent implements OnInit {
 
   aplicarFiltro() {
     const agora = new Date();
-    const proximas48h = new Date(agora.getTime() + 48 * 60 * 60 * 1000);
+    //const proximas48h = new Date(agora.getTime() + 48 * 60 * 60 * 1000);
 
     switch (this.filtro) {
       case 'futuros':

@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
   selector: 'app-modal-comprar-pontos',
   templateUrl: './modal-comprar-pontos.component.html',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule]
 })
 export class ModalComprarPontos implements OnInit {
   form!: FormGroup;
