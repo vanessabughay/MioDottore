@@ -1,30 +1,35 @@
-<div class="login-container">
-  <h2>MioDottore Gestão Hospitalar</h2>
+<div class="login-page">
+  <div class="left">
+    <div class="login-container">
+      <h2>MioDottore Gestão Hospitalar</h2>
+      <p class="slogan">Seu problema não é falta de médico.<br>É falta de organização.<br>MioDottore resolve.</p>
 
-  <form [formGroup]="form" (ngSubmit)="login()">
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail" />
-      <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
-        E-mail inválido
-      </small>
-    </div>
+   <form [formGroup]="form" (ngSubmit)="login()">
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail" />
+          <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            E-mail inválido
+          </small>
+        </div>
 
-    <div class="form-group">
-      <label for="senha">Senha</label>
-      <input id="senha" type="password" formControlName="senha" placeholder="Digite sua senha" />
-      <small *ngIf="form.get('senha')?.invalid && form.get('senha')?.touched">
-        A senha é obrigatória
-      </small>
-    </div>
+     <div class="form-group">
+          <label for="senha">Senha</label>
+          <input id="senha" type="password" formControlName="senha" placeholder="Digite sua senha" />
+          <small *ngIf="form.get('senha')?.invalid && form.get('senha')?.touched">
+            A senha é obrigatória
+          </small>
+        </div>
 
     <button type="submit" [disabled]="form.invalid">Entrar</button>
 
-    <p>Não tem conta? <a routerLink="/cadastro">Cadastre-se</a></p>
-
+        <p>Não tem conta? <a routerLink="/cadastro">Cadastre-se</a></p>
 
     <div *ngIf="error" class="error">
-      {{ error }}
+          {{ error }}
+        </div>
+      </form>
     </div>
-  </form>
+ </div>
+  <div class="right"></div>
 </div>
