@@ -1,0 +1,7 @@
+<h2>Cancelar Agendamento?</h2>
+<p>Tem certeza que deseja cancelar o agendamento para {{ data.especialidade }} com {{ data.medico }} em {{ data.data }}?</p>
+<p><em>Pontos utilizados serão devolvidos</em></p>
+<div class="actions">
+  <button mat-button (click)="dialogRef.close(false)">NÃO</button>
+  <button mat-raised-button color="warn" (click)="dialogRef.close(true)">SIM, CANCELAR</button>
+</div>

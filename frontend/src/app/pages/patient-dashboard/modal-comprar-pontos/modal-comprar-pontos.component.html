@@ -1,0 +1,11 @@
+<h2>Comprar Pontos</h2>
+<p>(1 ponto = R$ 5,00)</p>
+<form [formGroup]="form" class="form" (ngSubmit)="confirmar()">
+  <label>Quantidade de Pontos:</label>
+  <input type="number" formControlName="quantidade" />
+  <p>Valor Total: R$ {{ valorTotal }}</p>
+  <div class="actions">
+    <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Confirmar Compra</button>
+  </div>
+</form>

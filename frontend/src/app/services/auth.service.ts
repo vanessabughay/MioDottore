@@ -13,26 +13,22 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Simula login verificando email e senha na base local (json-server).
+   * Realiza login no backend e armazena o token retornado.
    */
   login(email: string, senha: string): Observable<any> {
-    const url = `${this.apiUrl}/usuarios?email=${email}&senha=${senha}`;
+    const url = `${this.apiUrl}/auth/login`;
 
-    return this.http.get<any[]>(url).pipe(
-      map(users => {
-        if (users.length === 1) {
-          const user = users[0];
-
-          // Armazena os dados no localStorage
-          localStorage.setItem('token', 'fake-token');
-          localStorage.setItem('tipo_usuario', user.tipo_usuario);
-          localStorage.setItem('nome', user.nome);
-          localStorage.setItem('pontos', String(user.pontos ?? '0'));
-
-          return user;
-        } else {
-          throw new Error('Login inválido');
+    return this.http.post<any>(url, { email, senha }).pipe(
+      map(res => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('tipo_usuario', res.tipoUsuario);
+        if (res.nomeUsuario) {
+          localStorage.setItem('nome', res.nomeUsuario);
         }
+        if (res.cpfUsuario) {
+          localStorage.setItem('cpf', res.cpfUsuario);
+        }
+        return res;
       }),
       catchError(() => {
         return throwError(() => new Error('Erro ao realizar login'));
@@ -40,6 +36,19 @@ export class AuthService {
     );
   }
 
+   /**
+   * Envia dados de autocadastro de paciente para o backend.
+   */
+  autocadastroPaciente(dados: any): Observable<any> {
+    const url = `${this.apiUrl}/auth/pacientes/autocadastro`;
+    return this.http.post(url, dados).pipe(
+      catchError(() => {
+        return throwError(() => new Error('Erro ao realizar autocadastro'));
+      })
+    );
+  }
+
+  
   logout(): void {
     localStorage.clear();
   }

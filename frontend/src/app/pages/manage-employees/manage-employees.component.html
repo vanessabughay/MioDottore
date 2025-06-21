@@ -1,0 +1,56 @@
+<div class="manage-employees">
+  <div class="header">
+    <h2>Gerenciar Funcionários</h2>
+    <button type="button" (click)="voltar()">Voltar</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="criarFuncionario()" class="form">
+    <div class="form-group">
+      <label>Nome</label>
+      <input type="text" formControlName="nome">
+    </div>
+    <div class="form-group">
+      <label>CPF</label>
+      <input type="text" formControlName="cpf">
+    </div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" formControlName="email">
+    </div>
+    <div class="form-group">
+      <label>Telefone</label>
+      <input type="text" formControlName="telefone">
+    </div>
+    <button type="submit" [disabled]="form.invalid">{{ selectedCpf ? 'Atualizar' : 'Cadastrar' }}</button>
+        <div *ngIf="form.invalid && (form.dirty || form.touched)" class="error">
+      Corrija os campos: {{ invalidFields.join(', ') }}
+    </div>
+    <div *ngIf="success" class="success">{{ success }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+
+  <h3>Funcionários Cadastrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>E-mail</th>
+        <th>Criado em</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of funcionarios">
+        <td>{{ f.nome }}</td>
+        <td>{{ f.cpf }}</td>
+        <td>{{ f.email }}</td>
+        <td>{{ f.createdAt | date:'short' }}</td>
+        <td>
+          <button type="button" (click)="editarFuncionario(f)">Editar</button>
+          <button type="button" (click)="inativarFuncionario(f.cpf)">Inativar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

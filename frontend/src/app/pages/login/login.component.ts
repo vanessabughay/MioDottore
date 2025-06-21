@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   providers: [AuthService]
 })
 export class LoginComponent implements OnInit {
@@ -35,13 +35,11 @@ export class LoginComponent implements OnInit {
     const { email, senha } = this.form.value;
 
     this.auth.login(email!, senha!).subscribe({
-      next: (res: any) => {
-        // localStorage.setItem('token', res.token);
-        // localStorage.setItem('tipo_usuario', res.tipo_usuario);
-
-        if (res.tipo_usuario === 'PACIENTE') {
+      next: () => {
+        const tipo = this.auth.getTipoUsuario();
+        if (tipo === 'PACIENTE') {
           this.router.navigate(['/paciente']);
-        } else if (res.tipo_usuario === 'FUNCIONARIO') {
+        } else if (tipo === 'FUNCIONARIO') {
           this.router.navigate(['/funcionario']);
         } else {
           this.error = 'Tipo de usuário desconhecido.';

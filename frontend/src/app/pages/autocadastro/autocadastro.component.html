@@ -1,0 +1,67 @@
+<div class="register-container">
+   <h2>Autocadastro de Paciente</h2>
+
+  <form [formGroup]="form" (ngSubmit)="register()">
+    <div class="form-group">
+      <label for="cpf">CPF</label>
+      <input id="cpf" type="text" formControlName="cpf" placeholder="Digite seu CPF" />
+      <small *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">CPF é obrigatório</small>
+    </div>
+
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input id="nome" type="text" formControlName="nome" placeholder="Digite seu nome" />
+      <small *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">Nome é obrigatório</small>
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail" />
+      <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">E-mail inválido</small>
+    </div>
+
+    <div class="form-group cep-group">
+  <label for="cep">CEP</label>
+  <input
+    id="cep"
+    class="cep-input"
+    type="text"
+    formControlName="cep"
+    placeholder="Digite seu CEP"
+    size="10"
+  />
+  <button type="button" (click)="consultarCep()">Consultar CEP</button>
+</div>
+
+ <div class="address-title">-- Endereço (preenchido via ViaCEP) --</div>
+    <div class="form-group">
+      <label for="rua">Rua</label>
+      <input id="rua" type="text" formControlName="rua" readonly />
+    </div>
+
+    <div class="form-group">
+     <label for="numero">Número</label>
+      <input id="numero" type="text" formControlName="numero" />
+    </div>
+
+   <div class="form-group">
+      <label for="bairro">Bairro</label>
+      <input id="bairro" type="text" formControlName="bairro" readonly />
+    </div>
+
+   <div class="form-group">
+      <label for="cidade">Cidade</label>
+      <input id="cidade" type="text" formControlName="cidade" readonly />
+    </div>
+
+   <div class="form-group">
+      <label for="uf">UF</label>
+      <input id="uf" type="text" formControlName="uf" readonly />
+    </div>
+     <button type="submit" [disabled]="form.invalid">Confirmar Cadastro</button>
+
+    <p class="text-center"><a routerLink="/login">Voltar para Login</a></p>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+</div>

@@ -1,0 +1,14 @@
+<h2>Confirmar Agendamento</h2>
+<p>Consulta: {{ data.especialidade }} com {{ data.medico }}</p>
+<p>Data/Hora: {{ data.data }} - {{ data.hora }}</p>
+<p>Valor: R$ {{ data.valor }}</p>
+<p>Seu saldo de pontos: {{ data.saldo }} pts</p>
+<form [formGroup]="form" class="form" (ngSubmit)="confirmar()">
+  <label>Usar pontos para desconto (máx {{ data.saldo }}):</label>
+  <input type="number" formControlName="pontos" [max]="data.saldo" />
+  <p>Valor com desconto: R$ {{ valorComDesconto }}</p>
+  <div class="actions">
+    <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit">Confirmar e Pagar</button>
+  </div>
+</form>

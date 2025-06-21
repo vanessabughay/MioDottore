@@ -47,18 +47,8 @@
         <td>{{ a.medico }}</td>
         <td>{{ a.status }}</td>
         <td>
-          <button
-            *ngIf="a.status === 'CRIADO'"
-            (click)="cancelarAgendamento(a.id)"
-          >
-            Cancelar
-          </button>
-          <button
-            *ngIf="a.status === 'CRIADO'"
-            (click)="fazerCheckin(a.id)"
-          >
-            Check-in
-          </button>
+          <button *ngIf="a.status === 'CRIADO'" (click)="cancelarAgendamento(a)">Cancelar</button>
+          <button *ngIf="a.status === 'CRIADO'" (click)="fazerCheckin(a)">Check-in</button>
         </td>
       </tr>
     </tbody>
