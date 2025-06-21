@@ -23,6 +23,5 @@ public class AgendamentoRequestDTO {
     private String pacienteCpf;
     
     @Min(0)
-    @Builder.Default
-    private Integer pontosParaUsar = 0;
+    private Integer pontosParaUsar;
 }

@@ -109,6 +109,7 @@ public class UsuarioService {
                 .email(cadastroDTO.getEmail())
                 .senhaHash(senhaHash)
                 .tipoUsuario(TipoUsuario.FUNCIONARIO)
+                .telefone(cadastroDTO.getTelefone())
                 .build();
         
         usuario = usuarioRepository.save(usuario);
@@ -140,8 +141,53 @@ public class UsuarioService {
     public List<UsuarioResponseDTO> listarFuncionarios() {
         return usuarioRepository.findByTipoUsuario(TipoUsuario.FUNCIONARIO)
                 .stream()
+                .filter(usuario -> usuario.getAtivo()) // Só funcionários ativos
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
+    }
+    
+    public UsuarioResponseDTO buscarFuncionarioPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.FUNCIONARIO)) {
+            throw new RuntimeException("Usuário não é um funcionário");
+        }
+        
+        return convertToResponseDTO(usuario);
+    }
+    
+    public UsuarioResponseDTO atualizarFuncionario(Long id, UsuarioUpdateDTO updateDTO) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.FUNCIONARIO)) {
+            throw new RuntimeException("Usuário não é um funcionário");
+        }
+        
+        if (usuarioRepository.existsByEmailAndIdNot(updateDTO.getEmail(), id)) {
+            throw new RuntimeException("Email já está em uso por outro usuário");
+        }
+        
+        usuario.setNome(updateDTO.getNome());
+        usuario.setEmail(updateDTO.getEmail());
+        usuario.setTelefone(updateDTO.getTelefone());
+        
+        usuario = usuarioRepository.save(usuario);
+        
+        return convertToResponseDTO(usuario);
+    }
+    
+    public void inativarFuncionario(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.FUNCIONARIO)) {
+            throw new RuntimeException("Usuário não é um funcionário");
+        }
+        
+        usuario.setAtivo(false);
+        usuarioRepository.save(usuario);
     }
     
     public TokenDTO login(LoginDTO loginDTO) {

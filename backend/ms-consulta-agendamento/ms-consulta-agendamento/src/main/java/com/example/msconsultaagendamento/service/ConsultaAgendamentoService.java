@@ -287,7 +287,7 @@ public class ConsultaAgendamentoService {
     private void debitarPontos(String cpf, Integer quantidade, String descricao) {
         try {
             Map<String, Object> dados = Map.of("quantidade", quantidade, "descricao", descricao);
-            restTemplate.postForObject(msPacienteUrl + "/" + cpf + "/pontos/debitar", dados, Object.class);
+            restTemplate.put(msPacienteUrl + "/" + cpf + "/pontos/debitar", dados);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao debitar pontos");
         }
@@ -296,7 +296,7 @@ public class ConsultaAgendamentoService {
     private void creditarPontos(String cpf, Integer quantidade, String descricao) {
         try {
             Map<String, Object> dados = Map.of("quantidade", quantidade, "descricao", descricao);
-            restTemplate.postForObject(msPacienteUrl + "/" + cpf + "/pontos/creditar", dados, Object.class);
+            restTemplate.put(msPacienteUrl + "/" + cpf + "/pontos/creditar", dados);
         } catch (Exception e) {
             System.err.println("Erro ao creditar pontos: " + e.getMessage());
         }

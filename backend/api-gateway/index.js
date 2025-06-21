@@ -115,36 +115,26 @@ app.post('/auth/pacientes/autocadastro', async (req, res) => {
 });
 
 
-app.use('/auth/funcionarios', authenticateJWT, authenticateFuncionario, async (req, res) => {
-    const pathSuffix = req.originalUrl.substring('/auth'.length); 
-    const targetUrl = `${MS_AUTENTICACAO_URL}${pathSuffix}`;
-    console.log(`[API Gateway] Rota ${req.method} ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+// Rotas específicas para funcionários (GET e POST)
+app.get('/auth/funcionarios', authenticateJWT, authenticateFuncionario, async (req, res) => {
+    const targetUrl = `${MS_AUTENTICACAO_URL}/funcionarios`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {
         const headers = { ...req.headers };
         delete headers['host'];
         delete headers['connection'];
-        delete headers['content-length']; 
+        delete headers['content-length'];
 
-        const options = {
-            method: req.method,
+        const response = await fetch(targetUrl, {
+            method: 'GET',
             headers: {
                 ...headers,
-                host: new URL(targetUrl).host 
-            },
-        };
-
-        
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
-            options.body = JSON.stringify(req.body);
-            if (!options.headers['content-type']?.includes('application/json')) {
-                options.headers['content-type'] = 'application/json';
+                host: new URL(targetUrl).host
             }
-        }
-        
-        const response = await fetch(targetUrl, options);
-        const responseBody = await response.text();
+        });
 
+        const responseBody = await response.text();
         const responseHeaders = {};
         response.headers.forEach((value, name) => {
             if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
@@ -158,7 +148,179 @@ app.use('/auth/funcionarios', authenticateJWT, authenticateFuncionario, async (r
         } catch (e) {
             res.send(responseBody);
         }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
 
+app.post('/auth/funcionarios', authenticateJWT, authenticateFuncionario, async (req, res) => {
+    const targetUrl = `${MS_AUTENTICACAO_URL}/funcionarios`;
+    console.log(`[API Gateway] Rota POST ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// Rotas para funcionários por ID (GET, PUT, DELETE)
+app.get('/auth/funcionarios/:id', authenticateJWT, authenticateFuncionario, async (req, res) => {
+    const targetUrl = `${MS_AUTENTICACAO_URL}/funcionarios/${req.params.id}`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.put('/auth/funcionarios/:id', authenticateJWT, authenticateFuncionario, async (req, res) => {
+    const targetUrl = `${MS_AUTENTICACAO_URL}/funcionarios/${req.params.id}`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.delete('/auth/funcionarios/:id', authenticateJWT, authenticateFuncionario, async (req, res) => {
+    const targetUrl = `${MS_AUTENTICACAO_URL}/funcionarios/${req.params.id}`;
+    console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'DELETE',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
     } catch (error) {
         console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
         if (error.code === 'ECONNREFUSED') {
@@ -275,11 +437,10 @@ app.use('/pacientes/interno', async (req, res) => {
     }
 });
 
-app.use('/pacientes', authenticateJWT, async (req, res) => {
-
-    const pathSuffix = req.originalUrl.substring('/pacientes'.length);
-    const targetUrl = `${MS_PACIENTE_URL}${pathSuffix}`;
-    console.log(`[API Gateway] Rota ${req.method} ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+// Rotas específicas para pacientes - suporte aos novos endpoints REST
+app.get('/pacientes/:cpf', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {
         const headers = { ...req.headers };
@@ -287,24 +448,15 @@ app.use('/pacientes', authenticateJWT, async (req, res) => {
         delete headers['connection'];
         delete headers['content-length'];
 
-        const options = {
-            method: req.method,
+        const response = await fetch(targetUrl, {
+            method: 'GET',
             headers: {
                 ...headers,
                 host: new URL(targetUrl).host
-            },
-        };
-
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
-            options.body = JSON.stringify(req.body);
-            if (!options.headers['content-type']?.includes('application/json')) {
-                options.headers['content-type'] = 'application/json';
             }
-        }
-        
-        const response = await fetch(targetUrl, options);
-        const responseBody = await response.text();
+        });
 
+        const responseBody = await response.text();
         const responseHeaders = {};
         response.headers.forEach((value, name) => {
             if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
@@ -318,7 +470,225 @@ app.use('/pacientes', authenticateJWT, async (req, res) => {
         } catch (e) {
             res.send(responseBody);
         }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
 
+app.get('/pacientes/:cpf/transacoes', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}/transacoes`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.get('/pacientes/:cpf/saldo', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}/saldo`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Comprar pontos - PUT /pacientes/{cpf}/pontos
+app.put('/pacientes/:cpf/pontos', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}/pontos`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Debitar pontos - PUT /pacientes/{cpf}/pontos/debitar
+app.put('/pacientes/:cpf/pontos/debitar', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}/pontos/debitar`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Creditar pontos - PUT /pacientes/{cpf}/pontos/creditar
+app.put('/pacientes/:cpf/pontos/creditar', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_PACIENTE_URL}/${req.params.cpf}/pontos/creditar`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
     } catch (error) {
         console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
         if (error.code === 'ECONNREFUSED') {
@@ -428,10 +798,10 @@ app.use('/consultas/interno', async (req, res) => {
     }
 });
 
-app.use('/agendamentos', authenticateJWT, async (req, res) => {
-    const pathSuffix = req.originalUrl.substring('/agendamentos'.length);
-    const targetUrl = `${MS_CONSULTA_URL}/agendamentos${pathSuffix}`;
-    console.log(`[API Gateway] Rota ${req.method} ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+// Rotas específicas para agendamentos - novos endpoints REST
+app.post('/agendamentos', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos`;
+    console.log(`[API Gateway] Rota POST ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {
         const headers = { ...req.headers };
@@ -439,24 +809,17 @@ app.use('/agendamentos', authenticateJWT, async (req, res) => {
         delete headers['connection'];
         delete headers['content-length'];
 
-        const options = {
-            method: req.method,
+        const response = await fetch(targetUrl, {
+            method: 'POST',
             headers: {
                 ...headers,
+                'content-type': 'application/json',
                 host: new URL(targetUrl).host
             },
-        };
+            body: JSON.stringify(req.body)
+        });
 
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
-            options.body = JSON.stringify(req.body);
-            if (!options.headers['content-type']?.includes('application/json')) {
-                options.headers['content-type'] = 'application/json';
-            }
-        }
-        
-        const response = await fetch(targetUrl, options);
         const responseBody = await response.text();
-
         const responseHeaders = {};
         response.headers.forEach((value, name) => {
             if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
@@ -470,7 +833,6 @@ app.use('/agendamentos', authenticateJWT, async (req, res) => {
         } catch (e) {
             res.send(responseBody);
         }
-
     } catch (error) {
         console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
         if (error.code === 'ECONNREFUSED') {
@@ -481,11 +843,10 @@ app.use('/agendamentos', authenticateJWT, async (req, res) => {
     }
 });
 
-app.use('/consultas', authenticateJWT, async (req, res) => {
-
-    const pathSuffix = req.originalUrl.substring('/consultas'.length);
-    const targetUrl = `${MS_CONSULTA_URL}${pathSuffix}`;
-    console.log(`[API Gateway] Rota ${req.method} ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+// NOVO: Cancelar agendamento - DELETE /agendamentos/{codigo}
+app.delete('/agendamentos/:codigo', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/${req.params.codigo}?pacienteCpf=${req.query.pacienteCpf}`;
+    console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {
         const headers = { ...req.headers };
@@ -493,24 +854,15 @@ app.use('/consultas', authenticateJWT, async (req, res) => {
         delete headers['connection'];
         delete headers['content-length'];
 
-        const options = {
-            method: req.method,
+        const response = await fetch(targetUrl, {
+            method: 'DELETE',
             headers: {
                 ...headers,
                 host: new URL(targetUrl).host
-            },
-        };
-
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
-            options.body = JSON.stringify(req.body);
-            if (!options.headers['content-type']?.includes('application/json')) {
-                options.headers['content-type'] = 'application/json';
             }
-        }
-        
-        const response = await fetch(targetUrl, options);
-        const responseBody = await response.text();
+        });
 
+        const responseBody = await response.text();
         const responseHeaders = {};
         response.headers.forEach((value, name) => {
             if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
@@ -524,7 +876,397 @@ app.use('/consultas', authenticateJWT, async (req, res) => {
         } catch (e) {
             res.send(responseBody);
         }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
 
+// NOVO: Check-in - PUT /agendamentos/{codigo}/status
+app.put('/agendamentos/:codigo/status', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/${req.params.codigo}/status`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Confirmar comparecimento - PUT /agendamentos/{codigo}/comparecimento
+app.put('/agendamentos/:codigo/comparecimento', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/${req.params.codigo}/comparecimento`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.get('/agendamentos/proximas48h', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/proximas48h`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.get('/agendamentos/paciente/:cpf', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/paciente/${req.params.cpf}`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.get('/agendamentos/paciente/:cpf/proximas48h', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/paciente/${req.params.cpf}/proximas48h`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// Rotas específicas para consultas - novos endpoints REST
+app.post('/consultas', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/consultas`;
+    console.log(`[API Gateway] Rota POST ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Cancelar consulta - DELETE /consultas/{codigo}
+app.delete('/consultas/:codigo', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/consultas/${req.params.codigo}`;
+    console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'DELETE',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+// NOVO: Realizar consulta - PUT /consultas/{codigo}/status
+app.put('/consultas/:codigo/status', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/consultas/${req.params.codigo}/status`;
+    console.log(`[API Gateway] Rota PUT ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'content-type': 'application/json',
+                host: new URL(targetUrl).host
+            },
+            body: JSON.stringify(req.body)
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
+app.get('/consultas/proximas48h', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/proximas48h`;
+    console.log(`[API Gateway] Rota GET ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
     } catch (error) {
         console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
         if (error.code === 'ECONNREFUSED') {

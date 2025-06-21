@@ -51,7 +51,7 @@ public class ConsultaController {
         }
     }
     
-    @PutMapping("/consultas/{codigoConsulta}/cancelar-funcionario")
+    @DeleteMapping("/consultas/{codigoConsulta}")
     public ResponseEntity<?> cancelarConsultaFuncionario(@PathVariable String codigoConsulta) {
         try {
             consultaAgendamentoService.cancelarConsultaFuncionario(codigoConsulta);
@@ -62,7 +62,7 @@ public class ConsultaController {
         }
     }
     
-    @PutMapping("/consultas/{codigoConsulta}/realizar")
+    @PutMapping("/consultas/{codigoConsulta}/status")
     public ResponseEntity<?> realizarConsulta(@PathVariable String codigoConsulta) {
         try {
             consultaAgendamentoService.realizarConsulta(codigoConsulta);

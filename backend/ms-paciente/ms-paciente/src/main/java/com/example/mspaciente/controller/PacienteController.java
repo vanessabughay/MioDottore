@@ -51,7 +51,7 @@ public class PacienteController {
         }
     }
     
-    @PostMapping("/{cpf}/pontos/comprar")
+    @PutMapping("/{cpf}/pontos")
     public ResponseEntity<?> comprarPontos(@PathVariable String cpf, @Valid @RequestBody CompraPontosDTO compraPontosDTO) {
         try {
             PacienteResponseDTO response = pacienteService.comprarPontos(cpf, compraPontosDTO);
@@ -73,13 +73,10 @@ public class PacienteController {
         }
     }
     
-    @PostMapping("/{cpf}/pontos/debitar")
-    public ResponseEntity<?> debitarPontos(@PathVariable String cpf, @RequestBody Map<String, Object> dados) {
+    @PutMapping("/{cpf}/pontos/debitar")
+    public ResponseEntity<?> debitarPontos(@PathVariable String cpf, @Valid @RequestBody DebitarPontosDTO debitarPontosDTO) {
         try {
-            Integer quantidade = (Integer) dados.get("quantidade");
-            String descricao = (String) dados.getOrDefault("descricao", "USO EM CONSULTA");
-            
-            pacienteService.debitarPontos(cpf, quantidade, descricao);
+            pacienteService.debitarPontos(cpf, debitarPontosDTO.getQuantidade(), debitarPontosDTO.getDescricao());
             return ResponseEntity.ok(Map.of("mensagem", "Pontos debitados com sucesso"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -87,13 +84,10 @@ public class PacienteController {
         }
     }
     
-    @PostMapping("/{cpf}/pontos/creditar")
-    public ResponseEntity<?> creditarPontos(@PathVariable String cpf, @RequestBody Map<String, Object> dados) {
+    @PutMapping("/{cpf}/pontos/creditar")
+    public ResponseEntity<?> creditarPontos(@PathVariable String cpf, @Valid @RequestBody CreditarPontosDTO creditarPontosDTO) {
         try {
-            Integer quantidade = (Integer) dados.get("quantidade");
-            String descricao = (String) dados.getOrDefault("descricao", "ESTORNO CANCELAMENTO");
-            
-            pacienteService.creditarPontos(cpf, quantidade, descricao);
+            pacienteService.creditarPontos(cpf, creditarPontosDTO.getQuantidade(), creditarPontosDTO.getDescricao());
             return ResponseEntity.ok(Map.of("mensagem", "Pontos creditados com sucesso"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

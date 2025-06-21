@@ -55,7 +55,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/pacientes/autocadastro", "/health", "/funcionarios").permitAll() // Rotas públicas
+                .requestMatchers("/login", "/pacientes/autocadastro", "/health", "/funcionarios", "/funcionarios/**").permitAll() // Rotas públicas
                 .anyRequest().authenticated() 
             );
         

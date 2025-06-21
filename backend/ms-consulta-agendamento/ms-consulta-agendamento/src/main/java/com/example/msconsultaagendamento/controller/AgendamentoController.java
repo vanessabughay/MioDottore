@@ -30,7 +30,7 @@ public class AgendamentoController {
         }
     }
     
-    @PutMapping("/{codigoAgendamento}/cancelar-paciente")
+    @DeleteMapping("/{codigoAgendamento}")
     public ResponseEntity<?> cancelarAgendamentoPaciente(@PathVariable String codigoAgendamento, @RequestParam String pacienteCpf) {
         try {
             consultaAgendamentoService.cancelarAgendamentoPaciente(codigoAgendamento, pacienteCpf);
@@ -41,10 +41,10 @@ public class AgendamentoController {
         }
     }
     
-    @PutMapping("/{codigoAgendamento}/check-in")
-    public ResponseEntity<?> realizarCheckin(@PathVariable String codigoAgendamento, @RequestParam String pacienteCpf) {
+    @PutMapping("/{codigoAgendamento}/status")
+    public ResponseEntity<?> realizarCheckin(@PathVariable String codigoAgendamento, @Valid @RequestBody CheckinRequestDTO checkinRequest) {
         try {
-            consultaAgendamentoService.realizarCheckin(codigoAgendamento, pacienteCpf);
+            consultaAgendamentoService.realizarCheckin(codigoAgendamento, checkinRequest.getPacienteCpf());
             return ResponseEntity.ok(Map.of("mensagem", "Check-in realizado com sucesso"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -52,7 +52,7 @@ public class AgendamentoController {
         }
     }
     
-    @PutMapping("/{codigoAgendamento}/confirmar-comparecimento")
+    @PutMapping("/{codigoAgendamento}/comparecimento")
     public ResponseEntity<?> confirmarComparecimento(@PathVariable String codigoAgendamento) {
         try {
             consultaAgendamentoService.confirmarComparecimento(codigoAgendamento);

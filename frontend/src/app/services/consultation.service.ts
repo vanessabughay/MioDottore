@@ -63,7 +63,7 @@ export class ConsultationService {
    */
   confirmarComparecimento(codigoAgendamento: string): Observable<any> {
         return this.http.put(
-      `${this.apiUrl}/consultas/agendamentos/${codigoAgendamento}/confirmar-comparecimento`,
+      `${this.apiUrl}/agendamentos/${codigoAgendamento}/comparecimento`,
       {},
       {
         headers: this.getAuthHeaders()
@@ -75,9 +75,8 @@ export class ConsultationService {
    * Cancela uma consulta
    */
   cancelarConsulta(codigoConsulta: string): Observable<any> {
-    return this.http.put(
-      `${this.apiUrl}/consultas/consultas/${codigoConsulta}/cancelar-funcionario`,
-      {},
+    return this.http.delete(
+      `${this.apiUrl}/consultas/${codigoConsulta}`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -87,7 +86,7 @@ export class ConsultationService {
    */
   realizarConsulta(codigoConsulta: string): Observable<any> {
     return this.http.put(
-      `${this.apiUrl}/consultas/consultas/${codigoConsulta}/realizar`,
+      `${this.apiUrl}/consultas/${codigoConsulta}/status`,
       {},
       {
         headers: this.getAuthHeaders()
@@ -97,7 +96,7 @@ export class ConsultationService {
 
 
   cadastrarConsulta(dados: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/consultas/consultas`, dados, {
+    return this.http.post(`${this.apiUrl}/consultas`, dados, {
       headers: this.getAuthHeaders()
     });
   }
@@ -111,23 +110,22 @@ export class ConsultationService {
   }
 
   agendarConsulta(dados: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/consultas/agendamentos`, dados, {
+    return this.http.post(`${this.apiUrl}/agendamentos`, dados, {
       headers: this.getAuthHeaders()
     });
   }
 
   cancelarAgendamento(codigo: string, cpf: string): Observable<any> {
-    return this.http.put(
-      `${this.apiUrl}/consultas/agendamentos/${codigo}/cancelar-paciente?pacienteCpf=${cpf}`,
-      {},
+    return this.http.delete(
+      `${this.apiUrl}/agendamentos/${codigo}?pacienteCpf=${cpf}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   realizarCheckin(codigo: string, cpf: string): Observable<any> {
     return this.http.put(
-      `${this.apiUrl}/consultas/agendamentos/${codigo}/check-in?pacienteCpf=${cpf}`,
-      {},
+      `${this.apiUrl}/agendamentos/${codigo}/status`,
+      { pacienteCpf: cpf },
       { headers: this.getAuthHeaders() }
     );
   }

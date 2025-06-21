@@ -39,6 +39,13 @@ public class Usuario {
     @Column(name = "tipo_usuario", nullable = false, length = 20)
     private TipoUsuario tipoUsuario;
     
+    @Column(name = "telefone", length = 15)
+    private String telefone;
+    
+    @Column(name = "ativo", nullable = false)
+    @Builder.Default
+    private Boolean ativo = true;
+    
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;

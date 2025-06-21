@@ -32,14 +32,20 @@ export class EmployeeService {
     });
   }
 
-  atualizarFuncionario(cpf: string, dados: any): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/auth/funcionarios/${cpf}`, dados, {
+  buscarFuncionario(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/auth/funcionarios/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  inativarFuncionario(cpf: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/auth/funcionarios/${cpf}`, {
+  atualizarFuncionario(id: number, dados: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/auth/funcionarios/${id}`, dados, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  inativarFuncionario(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/auth/funcionarios/${id}`, {
       headers: this.getAuthHeaders()
     });
   }

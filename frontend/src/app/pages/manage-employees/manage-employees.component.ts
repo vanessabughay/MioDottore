@@ -16,7 +16,7 @@ export class ManageEmployeesComponent implements OnInit {
   funcionarios: any[] = [];
   form!: FormGroup;
   error = '';
-  selectedCpf: string | undefined;
+  selectedId: number | undefined;
   success: string = '';
 
    get invalidFields(): string[] {
@@ -61,8 +61,8 @@ export class ManageEmployeesComponent implements OnInit {
       telefone: telefone ? telefone.replace(/\D/g, '') : ''
     };
 
-     if (this.selectedCpf) {
-      this.employeeService.atualizarFuncionario(this.selectedCpf, payload).subscribe({
+     if (this.selectedId) {
+      this.employeeService.atualizarFuncionario(this.selectedId, payload).subscribe({
         next: () => {
           this.success = 'Funcionário atualizado com sucesso.';
           this.resetForm();
@@ -84,7 +84,7 @@ export class ManageEmployeesComponent implements OnInit {
   }
 
   editarFuncionario(funcionario: any) {
-    this.selectedCpf = funcionario.cpf;
+    this.selectedId = funcionario.id;
     this.form.patchValue({
       nome: funcionario.nome,
       cpf: funcionario.cpf,
@@ -93,19 +93,26 @@ export class ManageEmployeesComponent implements OnInit {
     });
   }
 
-  inativarFuncionario(cpf: string) {
-    this.employeeService.inativarFuncionario(cpf).subscribe({
-      next: () => {
-        this.success = 'Funcionário inativado com sucesso.';
-        this.loadFuncionarios();
-      },
-      error: () => this.error = 'Erro ao inativar funcionário.'
-    });
+  inativarFuncionario(funcionario: any) {
+    const confirmacao = confirm(`Tem certeza que deseja inativar o funcionário ${funcionario.nome}?`);
+    if (confirmacao) {
+      this.employeeService.inativarFuncionario(funcionario.id).subscribe({
+        next: () => {
+          this.success = `Funcionário ${funcionario.nome} inativado com sucesso.`;
+          this.error = '';
+          this.loadFuncionarios();
+        },
+        error: () => {
+          this.error = `Erro ao inativar funcionário ${funcionario.nome}.`;
+          this.success = '';
+        }
+      });
+    }
   }
 
   private resetForm() {
     this.form.reset();
-    this.selectedCpf = undefined;
+    this.selectedId = undefined;
     this.loadFuncionarios();
   }
 

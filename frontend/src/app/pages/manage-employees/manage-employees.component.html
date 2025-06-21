@@ -21,7 +21,7 @@
       <label>Telefone</label>
       <input type="text" formControlName="telefone">
     </div>
-    <button type="submit" [disabled]="form.invalid">{{ selectedCpf ? 'Atualizar' : 'Cadastrar' }}</button>
+    <button type="submit" [disabled]="form.invalid">{{ selectedId ? 'Atualizar' : 'Cadastrar' }}</button>
         <div *ngIf="form.invalid && (form.dirty || form.touched)" class="error">
       Corrija os campos: {{ invalidFields.join(', ') }}
     </div>
@@ -48,7 +48,7 @@
         <td>{{ f.createdAt | date:'short' }}</td>
         <td>
           <button type="button" (click)="editarFuncionario(f)">Editar</button>
-          <button type="button" (click)="inativarFuncionario(f.cpf)">Inativar</button>
+          <button type="button" (click)="inativarFuncionario(f)">Inativar</button>
         </td>
       </tr>
     </tbody>

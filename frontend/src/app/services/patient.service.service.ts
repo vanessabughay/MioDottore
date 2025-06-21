@@ -52,7 +52,7 @@ export class PatientServiceService {
   }
   comprarPontos(cpf: string, quantidade: number): Observable<PacienteResponseDTO> {
     const payload = { quantidadePontos: quantidade };
-    return this.http.post<PacienteResponseDTO>(`${this.apiUrl}/pacientes/${cpf}/pontos/comprar`, payload, {
+    return this.http.put<PacienteResponseDTO>(`${this.apiUrl}/pacientes/${cpf}/pontos`, payload, {
       headers: this.getAuthHeaders()
     });
   }

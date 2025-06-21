@@ -28,7 +28,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (!usuarioRepository.existsByTipoUsuario(TipoUsuario.FUNCIONARIO)) {
-            String senhaGerada = gerarSenhaAleatoria();
+            String senhaGerada = "TADS";
             UsuarioCadastroDTO funcionarioDTO = new UsuarioCadastroDTO();
             funcionarioDTO.setNome("Funcionario Padrão");
             funcionarioDTO.setCpf("00000000000");
