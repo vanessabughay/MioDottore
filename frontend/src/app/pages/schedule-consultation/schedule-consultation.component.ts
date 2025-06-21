@@ -56,7 +56,7 @@ export class ScheduleConsultationComponent implements OnInit {
   agendar(consulta: any) {
     const ref = this.dialog.open(ModalConfirmarAgendamento, {
       data: {
-        especialidade: consulta.especialidadeNome,
+        especialidade: consulta.especialidade?.nome,
         medico: consulta.medicoNome,
         data: consulta.dataHora.split('T')[0],
         hora: consulta.dataHora.split('T')[1].substring(0,5),

@@ -1,4 +1,6 @@
-<div class="schedule-consultation">
+<div class="background"></div>
+<div class="schedule-consultation-page">
+  <div class="schedule-consultation">
   <div class="header">
     <h2>Agendar Nova Consulta</h2>
     <button type="button" (click)="voltar()">Voltar ao Painel</button>
@@ -33,11 +35,12 @@
       <tr *ngFor="let c of consultas">
         <td>{{ c.dataHora.split('T')[0] }}</td>
         <td>{{ c.dataHora.split('T')[1].substring(0,5) }}</td>
-        <td>{{ c.especialidadeNome }}</td>
+        <td>{{ c.especialidade?.nome }}</td>
         <td>{{ c.medicoNome }}</td>
         <td>R$ {{ c.valor }}</td>
         <td><button (click)="agendar(c)">Agendar</button></td>
       </tr>
     </tbody>
   </table>
+</div>
 </div>
