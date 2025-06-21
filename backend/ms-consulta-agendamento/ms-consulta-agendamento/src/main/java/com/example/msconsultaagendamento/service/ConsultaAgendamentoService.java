@@ -361,6 +361,14 @@ public class ConsultaAgendamentoService {
         LocalDateTime em48h = agora.plusHours(48);
         
         List<Agendamento> agendamentos = agendamentoRepository.findByPacienteCpfAndProximas48h(cpf, agora, em48h);
+        return agendamentos.stream()
+                .map(this::convertToAgendamentoResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<AgendamentoResponseDTO> buscarAgendamentosPaciente(String cpf) {
+        List<Agendamento> agendamentos = agendamentoRepository.findByPacienteCpf(cpf);
+
         
         return agendamentos.stream()
                 .map(this::convertToAgendamentoResponseDTO)

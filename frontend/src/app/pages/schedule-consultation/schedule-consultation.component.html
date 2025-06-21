@@ -3,7 +3,7 @@
   <div class="schedule-consultation">
   <div class="header">
     <h2>Agendar Nova Consulta</h2>
-    <button type="button" (click)="voltar()">Voltar ao Painel</button>
+    <button class="searchbutton" type="button" (click)="voltar()">Voltar ao Painel</button>
   </div>
 
   <form [formGroup]="form" class="filters" (ngSubmit)="loadConsultas()">
@@ -16,7 +16,7 @@
       <label>Médico:</label>
       <input formControlName="medico" />
     </div>
-    <button type="submit">Buscar</button>
+    <button class="searchbutton"  type="submit">Buscar</button>
   </form>
 
   <h3>Consultas Disponíveis:</h3>
