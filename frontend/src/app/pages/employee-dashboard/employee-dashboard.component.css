@@ -47,6 +47,28 @@ button:hover {
   background-color: #145ca0;
 }
 
+.btn-confirmar {
+  background-color: #4caf50;
+  margin-right: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-confirmar:hover {
+  background-color: #45a049;
+}
+
+.btn-cancelar {
+  background-color: #f44336;
+  margin-right: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-cancelar:hover {
+  background-color: #da190b;
+}
+
 
 .consulta-opcoes {
   margin-top: 24px;

@@ -22,6 +22,7 @@ import { ConsultationService } from '../../services/consultation.service';
 export class EmployeeDashboardComponent implements OnInit {
   nome: string = '';
   consultas: any[] = [];
+  agendamentos: any[] = [];
   consultasDisponiveis: any[] = [];
   consultaSelecionada: any = null;
   value: number = 0.0;
@@ -35,11 +36,9 @@ export class EmployeeDashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // Nome fictício — depois integrar com sistema de login
     this.nome = localStorage.getItem('nome') ?? 'Funcionário';
-
     this.loadConsultas();
-
+    this.loadAgendamentos();
     this.loadConsultasDisponiveis();
   }
 
@@ -47,6 +46,23 @@ export class EmployeeDashboardComponent implements OnInit {
     this.consultationService.listarProximas().subscribe({
       next: (res) => (this.consultas = res),
       error: () => (this.consultas = [])
+    });
+  }
+
+  loadAgendamentos(): void {
+    this.consultationService.listarAgendamentosProximas48h().subscribe({
+      next: (res) => {
+        this.agendamentos = res.map((a: any) => ({
+          codigo: a.codigo,
+          dataHora: a.dataHora,
+          especialidade: a.consulta?.especialidade?.nome || 'N/A',
+          medico: a.consulta?.medicoNome || 'N/A',
+          paciente: a.pacienteNome || 'N/A',
+          status: a.status,
+          consultaCodigo: a.consulta?.codigo
+        }));
+      },
+      error: () => (this.agendamentos = [])
     });
   }
 
@@ -62,15 +78,37 @@ loadConsultasDisponiveis(): void {
     this.consultaSelecionada = this.consultasDisponiveis.find(c => c.codigo === codigo);
   }
 
-  confirmarPresenca(consulta: any): void {
-    const ref = this.dialog.open(ModalConfirmarComparecimento, { data: consulta });
+  confirmarPresenca(agendamento: any): void {
+    const ref = this.dialog.open(ModalConfirmarComparecimento, { data: agendamento });
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.consultationService
-          .confirmarComparecimento(consulta.codigo)
-          .subscribe(() => this.loadConsultas());
+          .confirmarComparecimento(agendamento.codigo)
+          .subscribe(() => {
+            this.loadConsultas();
+            this.loadAgendamentos();
+          });
       }
     });
+  }
+
+  cancelarAgendamento(agendamento: any): void {
+    const confirmacao = confirm(`Tem certeza que deseja cancelar o agendamento ${agendamento.codigo}?`);
+    if (confirmacao) {
+      this.consultationService
+        .cancelarConsulta(agendamento.consultaCodigo)
+        .subscribe({
+          next: () => {
+            alert('Agendamento cancelado com sucesso!');
+            this.loadConsultas();
+            this.loadAgendamentos();
+            this.loadConsultasDisponiveis();
+          },
+          error: (err) => {
+            alert('Erro ao cancelar agendamento: ' + (err.error?.erro || err.message));
+          }
+        });
+    }
   }
 
   realizarConsulta(): void {
@@ -81,7 +119,10 @@ loadConsultasDisponiveis(): void {
       if (result) {
         this.consultationService
           .realizarConsulta(this.consultaSelecionada.codigo)
-          .subscribe(() => this.loadConsultas());
+          .subscribe(() => {
+            this.loadConsultas();
+            this.loadAgendamentos();
+          });
       }
     });
   }
@@ -96,6 +137,7 @@ loadConsultasDisponiveis(): void {
           .cancelarConsulta(this.consultaSelecionada.codigo)
           .subscribe(() => {
             this.loadConsultas();
+            this.loadAgendamentos();
             this.loadConsultasDisponiveis();
             this.consultaSelecionada = null;
           });

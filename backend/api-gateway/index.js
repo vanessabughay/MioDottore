@@ -428,6 +428,59 @@ app.use('/consultas/interno', async (req, res) => {
     }
 });
 
+app.use('/agendamentos', authenticateJWT, async (req, res) => {
+    const pathSuffix = req.originalUrl.substring('/agendamentos'.length);
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos${pathSuffix}`;
+    console.log(`[API Gateway] Rota ${req.method} ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const options = {
+            method: req.method,
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            },
+        };
+
+        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
+            options.body = JSON.stringify(req.body);
+            if (!options.headers['content-type']?.includes('application/json')) {
+                options.headers['content-type'] = 'application/json';
+            }
+        }
+        
+        const response = await fetch(targetUrl, options);
+        const responseBody = await response.text();
+
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+
 app.use('/consultas', authenticateJWT, async (req, res) => {
 
     const pathSuffix = req.originalUrl.substring('/consultas'.length);
@@ -490,5 +543,6 @@ app.listen(PORT, () => {
     console.log(`API Gateway rodando na porta ${PORT}`);
     console.log(` -> Proxying /auth para ${MS_AUTENTICACAO_URL}`);
     console.log(` -> Proxying /pacientes para ${MS_PACIENTE_URL}`);
+    console.log(` -> Proxying /agendamentos para ${MS_CONSULTA_URL}`);
     console.log(` -> Proxying /consultas para ${MS_CONSULTA_URL}`);
 });

@@ -341,7 +341,29 @@ public class ConsultaAgendamentoService {
                 .pontosUsados(agendamento.getPontosUsados())
                 .valorPago(agendamento.getValorPago())
                 .status(agendamento.getStatus())
-                .dataHora(agendamento.getDataHora())
+                .dataHora(agendamento.getConsulta().getDataHora())
                 .build();
+    }
+    
+    public List<AgendamentoResponseDTO> buscarAgendamentosProximas48h() {
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime em48h = agora.plusHours(48);
+        
+        List<Agendamento> agendamentos = agendamentoRepository.findAgendamentosProximas48h(agora, em48h);
+        
+        return agendamentos.stream()
+                .map(this::convertToAgendamentoResponseDTO)
+                .collect(Collectors.toList());
+    }
+    
+    public List<AgendamentoResponseDTO> buscarAgendamentosPacienteProximas48h(String cpf) {
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime em48h = agora.plusHours(48);
+        
+        List<Agendamento> agendamentos = agendamentoRepository.findByPacienteCpfAndProximas48h(cpf, agora, em48h);
+        
+        return agendamentos.stream()
+                .map(this::convertToAgendamentoResponseDTO)
+                .collect(Collectors.toList());
     }
 }

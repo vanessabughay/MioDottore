@@ -11,17 +11,17 @@
   <h3>Meus Agendamentos</h3>
 
   <div class="filters">
-    <button (click)="filtro = 'futuros'" [class.active]="filtro === 'futuros'">
+    <button (click)="alterarFiltro('futuros')" [class.active]="filtro === 'futuros'">
       Futuros
     </button>
     <button
-      (click)="filtro = 'realizados'"
+      (click)="alterarFiltro('realizados')"
       [class.active]="filtro === 'realizados'"
     >
       Realizados
     </button>
     <button
-      (click)="filtro = 'cancelados'"
+      (click)="alterarFiltro('cancelados')"
       [class.active]="filtro === 'cancelados'"
     >
       Cancelados
@@ -41,7 +41,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let a of agendamentos">
+      <tr *ngFor="let a of agendamentosFiltrados">
         <td>{{ a.data }}</td>
         <td>{{ a.especialidade }}</td>
         <td>{{ a.medico }}</td>
@@ -49,6 +49,11 @@
         <td>
           <button *ngIf="a.status === 'CRIADO'" (click)="cancelarAgendamento(a)">Cancelar</button>
           <button *ngIf="a.status === 'CRIADO'" (click)="fazerCheckin(a)">Check-in</button>
+        </td>
+      </tr>
+      <tr *ngIf="agendamentosFiltrados.length === 0">
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          Nenhum agendamento encontrado para este filtro.
         </td>
       </tr>
     </tbody>

@@ -29,6 +29,15 @@ export class ConsultationService {
     });
   }
 
+  /**
+   * Lista agendamentos das próximas 48h para funcionários
+   */
+  listarAgendamentosProximas48h(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/agendamentos/proximas48h`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   listarDisponiveis(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/consultas/disponiveis`, {
       headers: this.getAuthHeaders()
@@ -36,7 +45,13 @@ export class ConsultationService {
   }
 
   listarAgendamentosPaciente(cpf: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/consultas/agendamentos/paciente/${cpf}`, {
+    return this.http.get<any[]>(`${this.apiUrl}/agendamentos/paciente/${cpf}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  listarAgendamentosPacienteProximas48h(cpf: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/agendamentos/paciente/${cpf}/proximas48h`, {
       headers: this.getAuthHeaders()
     });
   }

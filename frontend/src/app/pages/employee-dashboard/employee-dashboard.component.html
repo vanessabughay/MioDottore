@@ -7,7 +7,7 @@
     <button (click)="logout()">Logout</button>
   </div>
 
-  <h3>Consultas Agendadas (Próximas 48h)</h3>
+  <h3>Agendamentos (Próximas 48h)</h3>
 
   <table>
     <thead>
@@ -21,16 +21,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let c of consultas">
-        <td>{{ c.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ c.especialidade }}</td>
-        <td>{{ c.medico }}</td>
-        <td>{{ c.paciente }}</td>
-        <td>{{ c.status }}</td>
+      <tr *ngFor="let a of agendamentos">
+        <td>{{ a.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ a.especialidade }}</td>
+        <td>{{ a.medico }}</td>
+        <td>{{ a.paciente }}</td>
+        <td>{{ a.status }}</td>
         <td>
-          <button *ngIf="c.status === 'CHECK-IN'" (click)="confirmarPresenca(c)">
+          <button *ngIf="a.status === 'CHECK_IN'" (click)="confirmarPresenca(a)" class="btn-confirmar">
             Confirmar Presença
           </button>
+          <button *ngIf="a.status === 'CRIADO' || a.status === 'CHECK_IN'" (click)="cancelarAgendamento(a)" class="btn-cancelar">
+            Cancelar Agendamento
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="agendamentos.length === 0">
+        <td colspan="6" style="text-align: center; padding: 20px;">
+          Nenhum agendamento nas próximas 48 horas.
         </td>
       </tr>
     </tbody>
