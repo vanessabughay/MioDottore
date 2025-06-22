@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import emailjs from 'emailjs-com';
 
+declare var Email: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -48,19 +48,24 @@ export class AuthService {
       })
     );
   }
-sendPasswordEmail(email: string, senha: string): Promise<void> {
-    const serviceID = environment.emailServiceId;
-    const templateID = environment.emailTemplateId;
-    const publicKey = environment.emailPublicKey;
+  
+  sendPasswordEmail(email: string, senha: string): Promise<void> {
+    const host = environment.smtpHost;
+    const username = environment.smtpUsername;
+    const password = environment.smtpPassword;
+    const from = environment.smtpFromEmail;
 
-    const params = {
-      to_email: email,
-      senha
-    };
-
-    return emailjs.send(serviceID, templateID, params, publicKey)
+    return Email.send({
+      Host: host,
+      Username: username,
+      Password: password,
+      To: email,
+      From: from,
+      Subject: 'MioDottore - Senha de acesso',
+      Body: `Sua senha é: ${senha}`
+    })
       .then(() => {})
-      .catch((err) => {
+      .catch((err: any) => {
         console.error('Erro ao enviar e-mail', err);
       });
   }

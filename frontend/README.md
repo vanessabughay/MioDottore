@@ -60,17 +60,15 @@ For more information on using the Angular CLI, including detailed command refere
 
 ## Email configuration
 
-To enable password e-mails, configure your EmailJS credentials in `src/environments/environment.ts`:
+To enable password e-mails, configure your SMTP.js credentials in `src/environments/environment.ts`:
 
 ```ts
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:4000',
-  emailServiceId: '<YOUR_SERVICE_ID>',
-  emailTemplateId: '<YOUR_TEMPLATE_ID>',
-  emailPublicKey: '<YOUR_PUBLIC_KEY>'
+  smtpSecureToken: '<YOUR_SMTP_SECURE_TOKEN>',
+  smtpFromEmail: '<YOUR_FROM_EMAIL>'
 };
 ```
 
-Replace the placeholders with the `service ID`, `template ID` and `public key` obtained from [EmailJS](https://www.emailjs.com/).
-The frontend relies on the **emailjs-com** package. If your environment lacks it, run `npm install emailjs-com`
+Replace the placeholders with the secure token and sender address obtained from [SMTP.js](https://smtpjs.com/). The SMTP.js script is loaded in `index.html`, so no additional npm package is required.
