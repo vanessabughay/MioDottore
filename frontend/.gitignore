@@ -45,3 +45,5 @@ Thumbs.db
 # Ignorar pasta antiga de projeto
 MioDottore/
 
+#ignorar email
+src/environments/environment.ts

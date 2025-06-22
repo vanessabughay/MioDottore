@@ -73,3 +73,4 @@ export const environment = {
 ```
 
 Replace the placeholders with the `service ID`, `template ID` and `public key` obtained from [EmailJS](https://www.emailjs.com/).
+The frontend relies on the **emailjs-com** package. If your environment lacks it, run `npm install emailjs-com`
