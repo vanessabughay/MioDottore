@@ -124,10 +124,10 @@ public class ConsultaAgendamentoService {
         if (especialidadeCodigo != null && !especialidadeCodigo.isEmpty()) {
             consultas = consultaRepository.findByEspecialidadeCodigo(especialidadeCodigo)
                     .stream()
-                    .filter(c -> c.getStatus() == StatusConsulta.DISPONIVEL && c.getVagasDisponiveis() > 0)
+                    .filter(c -> c.getStatus() == StatusConsulta.DISPONIVEL)
                     .collect(Collectors.toList());
         } else {
-            consultas = consultaRepository.findByStatusAndVagasDisponiveisGreaterThan(StatusConsulta.DISPONIVEL, 0);
+            consultas = consultaRepository.findByStatus(StatusConsulta.DISPONIVEL);
         }
         
         return consultas.stream()
