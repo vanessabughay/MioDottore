@@ -31,7 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             String senhaGerada = "TADS";
             UsuarioCadastroDTO funcionarioDTO = new UsuarioCadastroDTO();
             funcionarioDTO.setNome("Funcionario Padrão");
-            funcionarioDTO.setCpf("00000000000");
+            funcionarioDTO.setCpf("13655909926");
             funcionarioDTO.setEmail("funcionario@miodottore.com");
             funcionarioDTO.setTelefone("00000000000");
 

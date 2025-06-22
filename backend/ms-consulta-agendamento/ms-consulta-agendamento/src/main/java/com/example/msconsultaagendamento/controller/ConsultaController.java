@@ -77,4 +77,15 @@ public class ConsultaController {
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "MS Consulta/Agendamento is running!"));
     }
+    
+    @PostMapping("/criar-funcionario-padrao")
+    public ResponseEntity<?> criarFuncionarioPadrao() {
+        try {
+            consultaAgendamentoService.criarFuncionarioPadrao();
+            return ResponseEntity.ok(Map.of("mensagem", "Funcionário padrão criado!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("erro", e.getMessage()));
+        }
+    }
 }

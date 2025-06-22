@@ -57,13 +57,23 @@ public class ConsultaAgendamentoService {
     
     @Transactional
     public ConsultaResponseDTO cadastrarConsulta(ConsultaCadastroDTO cadastroDTO) {
+        System.out.println("=== DEBUG CADASTRO CONSULTA ===");
+        System.out.println("CPF recebido: " + cadastroDTO.getMedicoCpf());
+        System.out.println("Data/Hora: " + cadastroDTO.getDataHora());
+        System.out.println("Valor: " + cadastroDTO.getValor());
+        System.out.println("Vagas: " + cadastroDTO.getVagas());
+        
         Especialidade especialidade = especialidadeRepository.findById(cadastroDTO.getEspecialidadeCodigo())
                 .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
         
         Funcionario medico = funcionarioRepository.findByCpf(cadastroDTO.getMedicoCpf())
                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
         
+        System.out.println("Funcionário encontrado: " + medico.getNome() + " - CPF: " + medico.getCpf());
+        System.out.println("Gerando código da consulta...");
+        
         String codigoConsulta = gerarCodigoConsulta(cadastroDTO.getDataHora());
+        System.out.println("Código gerado: " + codigoConsulta);
         
         Consulta consulta = Consulta.builder()
                 .codigo(codigoConsulta)
@@ -79,6 +89,33 @@ public class ConsultaAgendamentoService {
         
         consulta = consultaRepository.save(consulta);
         return convertToConsultaResponseDTO(consulta);
+    }
+    
+    public void criarFuncionarioPadrao() {
+        try {
+            System.out.println("Verificando se funcionário padrão existe...");
+            boolean existe = funcionarioRepository.existsByCpf("13655909926");
+            System.out.println("Funcionário existe: " + existe);
+            
+            if (!existe) {
+                System.out.println("Criando funcionário padrão...");
+                Funcionario funcionarioPadrao = Funcionario.builder()
+                        .cpf("13655909926")
+                        .nome("Funcionario Padrão")
+                        .email("funcionario@miodottore.com")
+                        .telefone("00000000000")
+                        .status(StatusFuncionario.ATIVO)
+                        .build();
+                
+                funcionarioRepository.save(funcionarioPadrao);
+                System.out.println("Funcionário padrão criado com sucesso!");
+            } else {
+                System.out.println("Funcionário padrão já existe!");
+            }
+        } catch (Exception e) {
+            System.err.println("ERRO ao criar funcionário padrão: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     public List<ConsultaResponseDTO> buscarConsultasDisponiveis(String especialidadeCodigo) {
