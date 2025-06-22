@@ -118,8 +118,14 @@ export class PatientDashboardComponent implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.consultaService.cancelarAgendamento(ag.id, this.cpf).subscribe({
-          next: () => this.carregarAgendamentos(),
-          error: (err) => console.error('Erro ao cancelar:', err)
+          next: () => {
+            this.carregarAgendamentos();
+            this.patientService.getSaldo(this.cpf).subscribe({
+              next: saldo => (this.pontos = saldo.saldoPontos),
+              error: err => console.error('Erro ao atualizar saldo:', err)
+            });
+          },
+          error: err => console.error('Erro ao cancelar:', err)
         });
       }
     });
