@@ -294,6 +294,22 @@ app.delete('/auth/funcionarios/:id', authenticateJWT, authenticateFuncionario, a
     console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {
+        // busca o funcionário para obter o CPF e impedir auto inativação
+        try {
+            const verificaResp = await fetch(targetUrl, {
+                method: 'GET',
+                headers: { host: new URL(targetUrl).host }
+            });
+            if (verificaResp.ok) {
+                const funcionario = await verificaResp.json();
+                if (funcionario.cpf === req.user.cpf) {
+                    return res.status(403).json({ erro: 'Funcionário não pode inativar a si mesmo' });
+                }
+            }
+        } catch (err) {
+            console.error(`[API Gateway] Falha ao verificar funcionário ${req.params.id}`, err);
+        }
+        
         const headers = { ...req.headers };
         delete headers['host'];
         delete headers['connection'];
