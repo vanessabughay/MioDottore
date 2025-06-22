@@ -66,7 +66,6 @@ To enable password e-mails, configure your SMTP.js credentials in `src/environme
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:4000',
-  smtpSecureToken: '<YOUR_SMTP_SECURE_TOKEN>',
   smtpFromEmail: '<YOUR_FROM_EMAIL>'
 };
 ```
