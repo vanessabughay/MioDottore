@@ -122,6 +122,8 @@ loadConsultasDisponiveis(): void {
           .subscribe(() => {
             this.loadConsultas();
             this.loadAgendamentos();
+            this.loadConsultasDisponiveis();
+            this.consultaSelecionada = null;
           });
       }
     });
