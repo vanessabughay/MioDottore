@@ -3,7 +3,7 @@
   <mat-dialog-content>
     <p>Paciente: {{ data.paciente }}</p>
     <p>Consulta: {{ data.especialidade }} com {{ data.medico }}</p>
-    <p>Data/Hora: {{ data.dataHora }}</p>
+    <p>Data/Hora: {{ data.dataHora | date:'dd/MM/yyyy HH:mm'}}</p>
     <p>Código: {{ data.codigo }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

@@ -3,7 +3,7 @@
   <form [formGroup]="form" class="form" (ngSubmit)="confirmar()">
     <mat-dialog-content>
       <p>Consulta: {{ data.especialidade }} com {{ data.medico }}</p>
-      <p>Data/Hora: {{ data.data }} - {{ data.hora }}</p>
+      <p>Data/Hora: {{ data.dataHora | date:'dd/MM/yyyy HH:mm' }}</p>
       <p>Valor: R$ {{ data.valor }}</p>
       <p>Seu saldo de pontos: {{ data.saldo }} pts</p>
       <label>Usar pontos para desconto (máx {{ data.saldo }}):</label>

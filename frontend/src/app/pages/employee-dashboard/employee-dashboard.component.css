@@ -26,7 +26,7 @@
 }
 
 
-top-actions {
+.top-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -87,6 +87,8 @@ button:hover {
 .btn-cancelar:hover {
   background-color: #da190b;
 }
+
+
 
 
 .consulta-opcoes {

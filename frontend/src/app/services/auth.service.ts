@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import emailjs from '@emailjs/browser';
-import { EmailJSResponseStatus } from 'emailjs-com';
 
 
 @Injectable({
@@ -51,24 +49,7 @@ export class AuthService {
     );
   }
   
-  sendPasswordEmail(email: string, senha: string): Promise<void> {
-    emailjs.init(environment.emailJsPublicKey);
-    return emailjs
-      .send(
-        environment.emailJsServiceId,
-        environment.emailJsTemplateId,
-        { to_email: email, senha },
-        environment.emailJsPrivateKey
-      )
-      .then((response: EmailJSResponseStatus) => {
-  console.log('Status:', response.status);
-  console.log('Texto:', response.text);
-})
-      .catch((err: any) => {
-        console.error('Erro ao enviar e-mail', err);
-        alert('Erro ao enviar e-mail.');
-      });
-  }
+ 
   
   logout(): void {
     localStorage.clear();
