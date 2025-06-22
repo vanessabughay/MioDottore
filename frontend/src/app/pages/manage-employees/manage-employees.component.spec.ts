@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ManageEmployeesComponent } from './manage-employees.component';
+import { provideNgxMask } from 'ngx-mask';
 
 describe('ManageEmployeesComponent', () => {
   let component: ManageEmployeesComponent;
@@ -9,7 +10,8 @@ describe('ManageEmployeesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ManageEmployeesComponent, RouterTestingModule, HttpClientTestingModule]
+      imports: [ManageEmployeesComponent, RouterTestingModule, HttpClientTestingModule],
+      providers: [provideNgxMask()]
     })
     .compileComponents();
 

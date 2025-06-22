@@ -13,7 +13,7 @@
     </div>
     <div class="form-group">
       <label>CPF</label>
-      <input type="text" formControlName="cpf">
+      <input type="text" formControlName="cpf" mask="000.000.000-00">
     </div>
     <div class="form-group">
       <label>E-mail</label>
@@ -21,7 +21,7 @@
     </div>
     <div class="form-group">
       <label>Telefone</label>
-      <input type="text" formControlName="telefone">
+      <input type="text" formControlName="telefone" mask="(00)00000-0000">
     </div>
     <button type="submit" [disabled]="form.invalid">{{ selectedId ? 'Atualizar' : 'Cadastrar' }}</button>
         <div *ngIf="form.invalid && (form.dirty || form.touched)" class="error">
@@ -49,7 +49,7 @@
         <td>{{ f.email }}</td>
         <td>{{ f.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
         <td>
-          <button type="button" (click)="editarFuncionario(f)">Editar</button>
+          <button type="button" (click)="editarFuncionario(f)" >Editar</button>
           <button type="button" (click)="inativarFuncionario(f)">Inativar</button>
         </td>
       </tr>

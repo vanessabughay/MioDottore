@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senha-gerada.component';
+import { NgxMaskDirective } from 'ngx-mask';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senh
   selector: 'app-manage-employees',
   templateUrl: './manage-employees.component.html',
   styleUrls: ['./manage-employees.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, NgxMaskDirective]
 })
 export class ManageEmployeesComponent implements OnInit {
   funcionarios: any[] = [];

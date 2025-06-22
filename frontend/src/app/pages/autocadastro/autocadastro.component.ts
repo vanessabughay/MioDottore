@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NgxMaskDirective } from 'ngx-mask';
 import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senha-gerada.component';
 
 @Component({
@@ -12,7 +13,7 @@ import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senh
   selector: 'app-autocadastro',
   templateUrl: './autocadastro.component.html',
   styleUrls: ['./autocadastro.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatDialogModule, NgxMaskDirective],
   providers: [AuthService]
 })
 export class AutocadastroComponent implements OnInit {
@@ -32,7 +33,7 @@ export class AutocadastroComponent implements OnInit {
       nome: ['', Validators.required],
       cpf: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(9)]],
       rua: [{ value: '', disabled: true }],
       numero: [''],
       bairro: [{ value: '', disabled: true }],
@@ -44,9 +45,15 @@ export class AutocadastroComponent implements OnInit {
   register() {
     if (this.form.invalid) return;
 
-     const { nome, cpf, email, cep } = this.form.getRawValue();
+    const { nome, cpf, email, cep } = this.form.getRawValue();
+    const cepNumeros = cep.replace(/\D/g, '');
 
-     const dados = { nome, cpf, email, cep };
+    const dados = {
+      nome,
+      cpf: cpf.replace(/\D/g, ''),
+      email,
+      cep: cepNumeros
+    };
 
         this.auth.autocadastroPaciente(dados).subscribe({
 
@@ -64,12 +71,13 @@ export class AutocadastroComponent implements OnInit {
 
   consultarCep() {
     const cep = this.form.get('cep')?.value;
-    if (!cep || cep.length !== 8) {
+    const cepNumeros = (cep || '').replace(/\D/g, '');
+    if (!cepNumeros || cepNumeros.length !== 8) {
       this.error = 'CEP inválido';
       return;
     }
 
-    this.http.get<any>(`https://viacep.com.br/ws/${cep}/json/`).subscribe({
+    this.http.get<any>(`https://viacep.com.br/ws/${cepNumeros}/json/`).subscribe({
       next: (dados) => {
         if (dados.erro) {
           this.error = 'CEP não encontrado';

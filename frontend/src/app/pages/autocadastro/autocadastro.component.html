@@ -7,7 +7,13 @@
       <form [formGroup]="form" (ngSubmit)="register()">
         <div class="form-group">
           <label for="cpf">CPF</label>
-          <input id="cpf" type="text" formControlName="cpf" placeholder="Digite seu CPF" />
+         <input
+            id="cpf"
+            type="text"
+            formControlName="cpf"
+            placeholder="Digite seu CPF"
+            mask="000.000.000-00"
+          />
         </div>
         <small *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">CPF é obrigatório</small>
 
@@ -33,6 +39,7 @@
               formControlName="cep"
               placeholder="Digite seu CEP"
               size="10"
+              mask="00000-000"
             />
             <button type="button" class="cep-button" (click)="consultarCep()">Consultar CEP</button>
           </div>
