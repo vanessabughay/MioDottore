@@ -198,6 +198,10 @@ public class UsuarioService {
             
             Usuario usuario = usuarioRepository.findByEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+                    if (!Boolean.TRUE.equals(usuario.getAtivo())) {
+                throw new RuntimeException("Usuário inativo");
+            }
             
             String token = jwtTokenService.generateToken(usuario);
             

@@ -128,6 +128,10 @@ loadConsultasDisponiveis(): void {
   }
 
   cancelarConsulta(): void {
+    if (!this.podeCancelarConsulta()) {
+      alert('Não é possível cancelar consultas com mais de 50% das vagas ocupadas.');
+      return;
+    }
     const ref = this.dialog.open(ModalCancelarConsulta, {
       data: this.consultaSelecionada,
       panelClass: 'modal'
@@ -146,7 +150,14 @@ loadConsultasDisponiveis(): void {
     });
   }
     
-
+ podeCancelarConsulta(): boolean {
+    if (!this.consultaSelecionada) {
+      return false;
+    }
+    const ocupadas = this.consultaSelecionada.vagas - this.consultaSelecionada.vagasDisponiveis;
+    const total = this.consultaSelecionada.vagas || 1;
+    return ocupadas / total <= 0.5;
+  }
   cadastrarConsulta(): void {
     this.router.navigate(['/funcionario/cadastrar-consulta']);
   }

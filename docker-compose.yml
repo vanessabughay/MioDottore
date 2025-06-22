@@ -120,7 +120,7 @@ services:
       dockerfile: Dockerfile
     container_name: miodottore-frontend
     ports:
-      - "4200:80"
+      - "5000:80"
     depends_on:
       - api-gateway
     networks:
