@@ -136,8 +136,7 @@ loadConsultasDisponiveis(): void {
     }
     const ref = this.dialog.open(ModalCancelarConsulta, {
       data: this.consultaSelecionada,
-      panelClass: 'modal'
-    });
+         });
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.consultationService
