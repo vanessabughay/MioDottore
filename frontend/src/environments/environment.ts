@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:4000',
-  smtpHost: 'smtp.gmail.com',
-  smtpUsername: 'miodottoredac@gmail.com',
-  smtpPassword: 'miodottore2025',
-  smtpFromEmail: 'miodottoredac@gmail.com'
+  emailJsServiceId: 'miodottore',
+  emailJsTemplateId: 'miodottoresenha',
+  emailJsPublicKey: 'r7ln8VOoo1OhDbcPw',
+  emailJsPrivateKey: '0ZFqB8rsBd9BM0ZoZao9i'
 };
