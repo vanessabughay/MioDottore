@@ -49,7 +49,7 @@ export class AutocadastroComponent implements OnInit {
 
             next: (res) => {
         if (res?.senhaGerada) {
-          alert(`Sua senha gerada é: ${res.senhaGerada}`);
+          this.auth.sendPasswordEmail(email, res.senhaGerada);
         }
         this.router.navigate(['/login']);
       },

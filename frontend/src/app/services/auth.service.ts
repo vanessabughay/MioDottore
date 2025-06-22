@@ -47,7 +47,22 @@ export class AuthService {
       })
     );
   }
+sendPasswordEmail(email: string, senha: string): Promise<void> {
+    const serviceID = environment.emailServiceId;
+    const templateID = environment.emailTemplateId;
+    const publicKey = environment.emailPublicKey;
 
+    const params = {
+      to_email: email,
+      senha
+    };
+
+    return emailjs.send(serviceID, templateID, params, publicKey)
+      .then(() => {})
+      .catch((err) => {
+        console.error('Erro ao enviar e-mail', err);
+      });
+  }
   
   logout(): void {
     localStorage.clear();

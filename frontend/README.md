@@ -57,3 +57,19 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Email configuration
+
+To enable password e-mails, configure your EmailJS credentials in `src/environments/environment.ts`:
+
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:4000',
+  emailServiceId: '<YOUR_SERVICE_ID>',
+  emailTemplateId: '<YOUR_TEMPLATE_ID>',
+  emailPublicKey: '<YOUR_PUBLIC_KEY>'
+};
+```
+
+Replace the placeholders with the `service ID`, `template ID` and `public key` obtained from [EmailJS](https://www.emailjs.com/).

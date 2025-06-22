@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class ManageEmployeesComponent implements OnInit {
     return fields;
   }
 
-  constructor(private fb: FormBuilder, private employeeService: EmployeeService, private router: Router) {}
+   constructor(private fb: FormBuilder, private employeeService: EmployeeService, private router: Router, private auth: AuthService) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -73,7 +74,7 @@ export class ManageEmployeesComponent implements OnInit {
       this.employeeService.criarFuncionario(payload).subscribe({
         next: (res) => {
           if (res?.senhaGerada) {
-            alert(`Senha do funcionário: ${res.senhaGerada}`);
+            this.auth.sendPasswordEmail(email, res.senhaGerada);
           }
           this.success = 'Funcionário criado com sucesso.';
           this.resetForm();
