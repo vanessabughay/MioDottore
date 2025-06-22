@@ -58,20 +58,6 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
-## Email configuration
+## Password display
 
-To enable password e-mails, configure your EmailJS credentials in `src/environments/environment.ts`:
-
-```ts
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:4000',
-  smtpFromEmail: '<YOUR_FROM_EMAIL>'
-  emailJsServiceId: '<YOUR_SERVICE_ID>',
-  emailJsTemplateId: '<YOUR_TEMPLATE_ID>',
-  emailJsPublicKey: '<YOUR_PUBLIC_KEY>',
-  emailJsPrivateKey: '<YOUR_PRIVATE_KEY>'
-};
-```
-
-Replace the placeholders with the keys generated in your [EmailJS](https://www.emailjs.com/) account. The EmailJS SDK is loaded via CDN in `index.html`.
+When an account or employee is created, the generated password is shown directly in a modal window. No e-mail configuration is required.
