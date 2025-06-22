@@ -456,6 +456,20 @@ fetch(`http://localhost:4000/consultas/agendamentos/${codigoAgendamento}/cancela
 .then(data => console.log(data.mensagem));
 ```
 
+### 19. ❌ Cancelar Agendamento (Funcionário)
+```typescript
+// DELETE /consultas/agendamentos/{codigo}/funcionario
+
+const codigoAgendamento = 'A12071400123';
+
+fetch(`http://localhost:4000/consultas/agendamentos/${codigoAgendamento}/funcionario`, {
+  method: 'DELETE',
+  headers: getAuthHeaders()
+})
+.then(response => response.json())
+.then(data => console.log(data.mensagem));
+```
+
 ---
 
 ## 🚫 **TRATAMENTO DE ERROS**

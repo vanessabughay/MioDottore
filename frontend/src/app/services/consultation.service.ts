@@ -122,6 +122,12 @@ export class ConsultationService {
     );
   }
 
+cancelarAgendamentoFuncionario(codigo: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/agendamentos/${codigo}/funcionario`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   realizarCheckin(codigo: string, cpf: string): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/agendamentos/${codigo}/status`,

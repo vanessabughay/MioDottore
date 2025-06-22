@@ -309,7 +309,7 @@ app.delete('/auth/funcionarios/:id', authenticateJWT, authenticateFuncionario, a
         } catch (err) {
             console.error(`[API Gateway] Falha ao verificar funcionário ${req.params.id}`, err);
         }
-        
+
         const headers = { ...req.headers };
         delete headers['host'];
         delete headers['connection'];
@@ -862,6 +862,47 @@ app.post('/agendamentos', authenticateJWT, async (req, res) => {
 // NOVO: Cancelar agendamento - DELETE /agendamentos/{codigo}
 app.delete('/agendamentos/:codigo', authenticateJWT, async (req, res) => {
     const targetUrl = `${MS_CONSULTA_URL}/agendamentos/${req.params.codigo}?pacienteCpf=${req.query.pacienteCpf}`;
+    console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
+
+    try {
+        const headers = { ...req.headers };
+        delete headers['host'];
+        delete headers['connection'];
+        delete headers['content-length'];
+
+        const response = await fetch(targetUrl, {
+            method: 'DELETE',
+            headers: {
+                ...headers,
+                host: new URL(targetUrl).host
+            }
+        });
+
+        const responseBody = await response.text();
+        const responseHeaders = {};
+        response.headers.forEach((value, name) => {
+            if (!['transfer-encoding', 'connection', 'content-encoding'].includes(name.toLowerCase())) {
+                responseHeaders[name] = value;
+            }
+        });
+
+        res.status(response.status).set(responseHeaders);
+        try {
+            res.json(JSON.parse(responseBody));
+        } catch (e) {
+            res.send(responseBody);
+        }
+    } catch (error) {
+        console.error(`[API Gateway] Erro no proxy manual para ${req.originalUrl}: ${targetUrl}`, error);
+        if (error.code === 'ECONNREFUSED') {
+            res.status(503).json({ erro: 'Serviço indisponível', detalhes: `Não foi possível conectar a ${targetUrl}` });
+        } else {
+            res.status(502).json({ erro: 'Bad Gateway', detalhes: error.message });
+        }
+    }
+});
+app.delete('/agendamentos/:codigo/funcionario', authenticateJWT, async (req, res) => {
+    const targetUrl = `${MS_CONSULTA_URL}/agendamentos/${req.params.codigo}/funcionario`;
     console.log(`[API Gateway] Rota DELETE ${req.originalUrl} -> Proxy manual para ${targetUrl}`);
 
     try {

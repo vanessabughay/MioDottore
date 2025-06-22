@@ -214,6 +214,28 @@ public class ConsultaAgendamentoService {
         }
     }
     
+
+@Transactional
+    public void cancelarAgendamentoFuncionario(String codigoAgendamento) {
+        Agendamento agendamento = agendamentoRepository.findById(codigoAgendamento)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        if (agendamento.getStatus() != StatusAgendamento.CRIADO && agendamento.getStatus() != StatusAgendamento.CHECK_IN) {
+            throw new RuntimeException("Agendamento não pode ser cancelado");
+        }
+
+        agendamento.setStatus(StatusAgendamento.CANCELADO_SISTEMA);
+        agendamentoRepository.save(agendamento);
+
+        Consulta consulta = agendamento.getConsulta();
+        consulta.setVagasDisponiveis(consulta.getVagasDisponiveis() + 1);
+        consultaRepository.save(consulta);
+
+        if (agendamento.getPontosUsados() > 0) {
+            creditarPontos(agendamento.getPacienteCpf(), agendamento.getPontosUsados(), "ESTORNO CANCELAMENTO SISTEMA");
+        }
+    }
+
     @Transactional
     public void realizarCheckin(String codigoAgendamento, String pacienteCpf) {
         Agendamento agendamento = agendamentoRepository.findByCodigoAndPacienteCpf(codigoAgendamento, pacienteCpf)

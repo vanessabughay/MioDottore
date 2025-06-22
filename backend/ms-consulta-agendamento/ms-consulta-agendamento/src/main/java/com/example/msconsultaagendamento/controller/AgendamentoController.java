@@ -41,6 +41,17 @@ public class AgendamentoController {
         }
     }
     
+@DeleteMapping("/{codigo}/funcionario")
+    public ResponseEntity<?> cancelarAgendamentoFuncionario(@PathVariable String codigo) {
+        try {
+            consultaAgendamentoService.cancelarAgendamentoFuncionario(codigo);
+            return ResponseEntity.ok(Map.of("mensagem", "Agendamento cancelado com sucesso"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("erro", e.getMessage()));
+        }
+    }
+
     @PutMapping("/{codigoAgendamento}/status")
     public ResponseEntity<?> realizarCheckin(@PathVariable String codigoAgendamento, @Valid @RequestBody CheckinRequestDTO checkinRequest) {
         try {

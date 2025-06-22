@@ -58,6 +58,7 @@ export class EmployeeDashboardComponent implements OnInit {
           especialidade: a.consulta?.especialidade?.nome || 'N/A',
           medico: a.consulta?.medicoNome || 'N/A',
           paciente: a.pacienteNome || 'N/A',
+          pacienteCpf: a.pacienteCpf,
           status: a.status,
           consultaCodigo: a.consulta?.codigo
         }));
@@ -96,7 +97,7 @@ loadConsultasDisponiveis(): void {
     const confirmacao = confirm(`Tem certeza que deseja cancelar o agendamento ${agendamento.codigo}?`);
     if (confirmacao) {
       this.consultationService
-        .cancelarConsulta(agendamento.consultaCodigo)
+        .cancelarAgendamentoFuncionario(agendamento.codigo)
         .subscribe({
           next: () => {
             alert('Agendamento cancelado com sucesso!');
