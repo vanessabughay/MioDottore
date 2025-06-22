@@ -42,4 +42,5 @@ Thumbs.db
 
 # email
 src/environments/environment.ts
+.env
 
