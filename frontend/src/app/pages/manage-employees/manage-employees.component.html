@@ -47,7 +47,7 @@
         <td>{{ f.nome }}</td>
         <td>{{ f.cpf }}</td>
         <td>{{ f.email }}</td>
-        <td>{{ f.createdAt | date:'short' }}</td>
+        <td>{{ f.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
         <td>
           <button type="button" (click)="editarFuncionario(f)">Editar</button>
           <button type="button" (click)="inativarFuncionario(f)">Inativar</button>

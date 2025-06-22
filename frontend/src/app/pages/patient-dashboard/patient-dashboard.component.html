@@ -44,7 +44,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let a of agendamentosFiltrados">
-        <td>{{ a.data }}</td>
+        <td>{{ a.dataHora | date:'dd/MM/yyyy' }}</td>
         <td>{{ a.especialidade }}</td>
         <td>{{ a.medico }}</td>
         <td>{{ a.status }}</td>

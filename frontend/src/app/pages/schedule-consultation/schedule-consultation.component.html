@@ -33,8 +33,8 @@
     </thead>
     <tbody>
       <tr *ngFor="let c of consultas">
-        <td>{{ c.dataHora.split('T')[0] }}</td>
-        <td>{{ c.dataHora.split('T')[1].substring(0,5) }}</td>
+        <td>{{ c.dataHora | date:'dd/MM/yyyy' }}</td>
+        <td>{{ c.dataHora | date:'HH:mm' }}</td>
         <td>{{ c.especialidade?.nome }}</td>
         <td>{{ c.medicoNome }}</td>
         <td>R$ {{ c.valor }}</td>
