@@ -4,13 +4,15 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senha-gerada.component';
 
 @Component({
   standalone: true,
   selector: 'app-autocadastro',
   templateUrl: './autocadastro.component.html',
   styleUrls: ['./autocadastro.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatDialogModule],
   providers: [AuthService]
 })
 export class AutocadastroComponent implements OnInit {
@@ -21,7 +23,8 @@ export class AutocadastroComponent implements OnInit {
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -49,7 +52,7 @@ export class AutocadastroComponent implements OnInit {
 
             next: (res) => {
         if (res?.senhaGerada) {
-          alert(`Sua senha gerada é: ${res.senhaGerada}`);
+          this.dialog.open(ModalSenhaGerada, { data: { senha: res.senhaGerada } });
         }
         this.router.navigate(['/login']);
       },

@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { PatientServiceService, TransacaoPontosResponseDTO } from '../../../services/patient.service.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
   selector: 'app-modal-historico-pontos',
   templateUrl: './modal-historico-pontos.component.html',
-  imports: [CommonModule, MatDialogModule]
+  imports: [CommonModule, MatDialogModule, MatButtonModule]
 })
 export class ModalHistoricoPontos implements OnInit {
   transacoes: TransacaoPontosResponseDTO[] = [];

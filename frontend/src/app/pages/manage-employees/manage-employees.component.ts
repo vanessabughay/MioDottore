@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senha-gerada.component';
 
 
 @Component({
@@ -10,7 +13,7 @@ import { Router } from '@angular/router';
   selector: 'app-manage-employees',
   templateUrl: './manage-employees.component.html',
   styleUrls: ['./manage-employees.component.css'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export class ManageEmployeesComponent implements OnInit {
   funcionarios: any[] = [];
@@ -29,7 +32,13 @@ export class ManageEmployeesComponent implements OnInit {
     return fields;
   }
 
-  constructor(private fb: FormBuilder, private employeeService: EmployeeService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private employeeService: EmployeeService,
+    private router: Router,
+    private auth: AuthService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -73,7 +82,7 @@ export class ManageEmployeesComponent implements OnInit {
       this.employeeService.criarFuncionario(payload).subscribe({
         next: (res) => {
           if (res?.senhaGerada) {
-            alert(`Senha do funcionário: ${res.senhaGerada}`);
+            this.dialog.open(ModalSenhaGerada, { data: { senha: res.senhaGerada } });
           }
           this.success = 'Funcionário criado com sucesso.';
           this.resetForm();

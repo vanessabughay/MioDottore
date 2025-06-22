@@ -1,6 +1,24 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+  background: url('../../assets/images/fundo_login.jpg') center/cover no-repeat;
+}
+
+.left,
+.right {
+  flex: 1;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .login-container {
   max-width: 360px;
-  margin: 80px auto;
+  width: 100%;
+  margin: 0;
   padding: 30px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -11,7 +29,14 @@
 
 .login-container h2 {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
+}
+
+.slogan {
+  text-align: center;
+  margin-top: -16px;
+  margin-bottom: 30px;
+  font-style: italic;
 }
 
 .form-group {

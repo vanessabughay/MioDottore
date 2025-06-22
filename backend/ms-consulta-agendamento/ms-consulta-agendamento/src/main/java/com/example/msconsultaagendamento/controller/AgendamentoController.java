@@ -77,7 +77,7 @@ public class AgendamentoController {
     @GetMapping("/paciente/{cpf}")
     public ResponseEntity<?> buscarAgendamentosPaciente(@PathVariable String cpf) {
         try {
-            List<AgendamentoResponseDTO> response = consultaAgendamentoService.buscarAgendamentosPacienteProximas48h(cpf);
+            List<AgendamentoResponseDTO> response = consultaAgendamentoService.buscarAgendamentosPaciente(cpf);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

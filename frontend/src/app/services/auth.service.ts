@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,7 +48,8 @@ export class AuthService {
       })
     );
   }
-
+  
+ 
   
   logout(): void {
     localStorage.clear();

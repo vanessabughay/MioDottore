@@ -1,15 +1,15 @@
-<h2 mat-dialog-title>Cancelar Consulta</h2>
-
-<mat-dialog-content>
-  <p><strong>Especialidade:</strong> {{ data.especialidade?.nome }}</p>
-  <p><strong>Médico:</strong> {{ data.medicoNome }}</p>
-  <p><strong>Data:</strong> {{ data.dataHora | date:'dd/MM/yyyy HH:mm' }}</p>
-  <p><strong>Vagas Ocupadas:</strong>
-    {{ data.vagas - data.vagasDisponiveis }} / {{ data.vagas }}
-  </p>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="dialogRef.close(false)">Voltar</button>
-  <button mat-raised-button color="warn" (click)="dialogRef.close(true)">Cancelar</button>
-</mat-dialog-actions>
+<div class="modal">
+  <h2 mat-dialog-title>Cancelar Consulta</h2>
+  <mat-dialog-content>
+    <p><strong>Especialidade:</strong> {{ data.especialidade?.nome }}</p>
+    <p><strong>Médico:</strong> {{ data.medicoNome }}</p>
+    <p><strong>Data:</strong> {{ data.dataHora | date:'dd/MM/yyyy HH:mm' }}</p>
+    <p><strong>Vagas Ocupadas:</strong>
+      {{ data.vagas - data.vagasDisponiveis }} / {{ data.vagas }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close(false)">Voltar</button>
+    <button mat-raised-button color="warn" (click)="dialogRef.close(true)">Cancelar</button>
+  </mat-dialog-actions>
+</div>

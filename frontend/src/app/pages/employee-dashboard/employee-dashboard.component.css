@@ -1,13 +1,32 @@
+.background {
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../../assets/images/fundo.png') center/cover no-repeat;
+  z-index: -1;
+}
+
+.employee-dashboard-page {
+   position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  
+}
+
 .employee-dashboard {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 20px auto 0 auto; 
   padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 8px;
   font-family: sans-serif;
 }
 
-top-actions {
+
+.top-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -68,6 +87,8 @@ button:hover {
 .btn-cancelar:hover {
   background-color: #da190b;
 }
+
+
 
 
 .consulta-opcoes {

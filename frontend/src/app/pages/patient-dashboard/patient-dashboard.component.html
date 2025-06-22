@@ -1,4 +1,6 @@
-<div class="patient-dashboard">
+<div class="background"></div>
+<div class="patient-dashboard-page">
+  <div class="patient-dashboard">
   <div class="header">
     <h2>Bem-vindo(a), {{ nome }}! Saldo de Pontos: {{ pontos }} pts</h2>
     <div class="actions">
@@ -42,7 +44,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let a of agendamentosFiltrados">
-        <td>{{ a.data }}</td>
+        <td>{{ a.dataHora | date:'dd/MM/yyyy' }}</td>
         <td>{{ a.especialidade }}</td>
         <td>{{ a.medico }}</td>
         <td>{{ a.status }}</td>
@@ -58,4 +60,5 @@
       </tr>
     </tbody>
   </table>
+</div>
 </div>

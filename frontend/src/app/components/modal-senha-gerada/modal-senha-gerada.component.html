@@ -1,0 +1,10 @@
+<div class="modal">
+  <h2 mat-dialog-title>Senha Gerada</h2>
+  <mat-dialog-content>
+    <p>Sua senha de acesso é: <strong>{{ data.senha }}</strong></p>
+    <p>Guarde-a em local seguro.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" (click)="dialogRef.close()">OK</button>
+  </mat-dialog-actions>
+</div>

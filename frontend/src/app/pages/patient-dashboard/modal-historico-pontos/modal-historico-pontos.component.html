@@ -1,22 +1,26 @@
-<h2>Histórico de Pontos</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Data/Hora</th>
-      <th>Tipo</th>
-      <th>Descrição</th>
-      <th>Pontos</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let t of transacoes">
-      <td>{{ t.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
-      <td>{{ t.tipo }}</td>
-      <td>{{ t.descricao }}</td>
-      <td>{{ t.quantidadePontos }}</td>
-    </tr>
-  </tbody>
-</table>
-<div class="actions">
-  <button mat-button (click)="dialogRef.close()">Fechar</button>
+<div class="modal">
+  <h2 mat-dialog-title>Histórico de Pontos</h2>
+  <mat-dialog-content>
+    <table>
+      <thead>
+        <tr>
+          <th>Data/Hora</th>
+          <th>Tipo</th>
+          <th>Descrição</th>
+          <th>Pontos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of transacoes">
+          <td>{{ t.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ t.tipo }}</td>
+          <td>{{ t.descricao }}</td>
+          <td>{{ t.quantidadePontos }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()">Fechar</button>
+  </mat-dialog-actions>
 </div>

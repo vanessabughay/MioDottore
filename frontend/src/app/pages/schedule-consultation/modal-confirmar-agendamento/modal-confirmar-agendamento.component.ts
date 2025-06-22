@@ -2,12 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
   selector: 'app-modal-confirmar-agendamento',
   templateUrl: './modal-confirmar-agendamento.component.html',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule]
 })
 export class ModalConfirmarAgendamento implements OnInit {
   form!: FormGroup;

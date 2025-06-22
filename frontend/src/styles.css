@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  font-family: sans-serif;
+  padding: 20px;
+  max-width: 600px;
+  border: 3px solid #3b7b6d !important;
+}
+
+ .modal .mat-dialog-actions button {
+  padding: 8px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal p {
+  margin-bottom: 12px;
+}
+
+.modal input,
+.modal select,
+.modal textarea,
+.modal .mat-form-field {
+  margin-bottom: 12px;
+  display: block;
+  width: 100%;
+}
+
+.modal .mat-dialog-actions button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.modal .mat-dialog-actions button[color="warn"] {
+  background-color: #f44336;
+}
+
+.modal .mat-dialog-actions button[color="warn"]:hover {
+  background-color: #da190b;
+}
