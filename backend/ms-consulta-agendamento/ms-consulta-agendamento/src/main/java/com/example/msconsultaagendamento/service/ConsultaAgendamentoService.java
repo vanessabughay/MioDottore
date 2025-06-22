@@ -35,6 +35,9 @@ public class ConsultaAgendamentoService {
     @Autowired
     private RestTemplate restTemplate;
     
+    @Autowired
+    private EmailService emailService;
+    
     @Value("${ms.paciente.url}")
     private String msPacienteUrl;
     
@@ -53,6 +56,10 @@ public class ConsultaAgendamentoService {
                 .build();
         
         funcionarioRepository.save(funcionario);
+        
+        if (funcionarioDTO.getSenhaTemporaria() != null && !funcionarioDTO.getSenhaTemporaria().isEmpty()) {
+            emailService.enviarSenhaFuncionario(funcionarioDTO.getEmail(), funcionarioDTO.getNome(), funcionarioDTO.getSenhaTemporaria());
+        }
     }
     
     @Transactional

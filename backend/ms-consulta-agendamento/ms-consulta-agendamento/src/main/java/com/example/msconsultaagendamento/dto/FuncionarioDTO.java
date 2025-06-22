@@ -30,4 +30,6 @@ public class FuncionarioDTO {
     
     @Size(max = 20)
     private String telefone;
+    
+    private String senhaTemporaria;
 }

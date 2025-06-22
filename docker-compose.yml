@@ -59,6 +59,8 @@ services:
       SPRING_DATASOURCE_USERNAME: admin_auth
       SPRING_DATASOURCE_PASSWORD: pass_auth
       JWT_SECRET: "c2VjcmV0a2V5Zm9ybWlvZG90dG9yZWFwcGxpY2F0aW9uMjU2Yml0cw=="
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     networks:
       - miodottore-network
 
@@ -91,6 +93,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-consulta:5432/appointment_db
       SPRING_DATASOURCE_USERNAME: admin_consulta
       SPRING_DATASOURCE_PASSWORD: pass_consulta
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     networks:
       - miodottore-network
 

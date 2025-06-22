@@ -31,6 +31,9 @@ public class UsuarioService {
     @Autowired
     private JwtTokenService jwtTokenService;
     
+    @Autowired
+    private EmailService emailService;
+    
     private final AuthenticationManager authenticationManager;
     
     private final RestTemplate restTemplate;
@@ -84,6 +87,8 @@ public class UsuarioService {
             throw new RuntimeException("Erro ao cadastrar paciente no serviço de pacientes: " + e.getMessage(), e);
         }
         
+        emailService.enviarSenhaGerada(cadastroDTO.getEmail(), cadastroDTO.getNome(), senhaGerada, "Paciente");
+        
         Map<String, Object> response = new HashMap<>();
         response.put("mensagem", "Paciente cadastrado com sucesso");
         response.put("senhaGerada", senhaGerada);
@@ -120,6 +125,7 @@ public class UsuarioService {
             funcionarioData.put("nome", cadastroDTO.getNome());
             funcionarioData.put("email", cadastroDTO.getEmail());
             funcionarioData.put("telefone", cadastroDTO.getTelefone());
+            funcionarioData.put("senhaTemporaria", senhaGerada);
             
             restTemplate.postForObject(msConsultaUrl + "/interno/funcionarios", funcionarioData, Object.class);
         } catch (Exception e) {
