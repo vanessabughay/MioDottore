@@ -1,0 +1,44 @@
+R01: Autocadastro de Paciente – Cadastro com CPF, nome, e-mail, CEP, senha (4 dígitos aleatórios via e-mail). Endereço preenchido via ViaCEP. Início com 0 pontos.
+    Permite que pacientes se cadastrem no sistema informando CPF, nome, e-mail e CEP. O endereço completo é preenchido automaticamente por meio da API ViaCEP. O paciente inicia com 0 pontos e recebe por e-mail uma senha numérica gerada aleatoriamente.
+
+R02: Login/Logout – Autenticação via e-mail e senha com token JWT.
+    Usuários acessam o sistema com seu e-mail e senha. Após validação, é gerado um token JWT que será usado para autenticação nas demais requisições. Todas as funcionalidades subsequentes exigem autenticação válida.
+Perfil Paciente
+
+R03: Tela Inicial do Paciente – Menu com saldo de pontos e agendamentos (futuros, realizados, cancelados).
+    Apresenta um menu com as opções disponíveis para o paciente. Exibe também o saldo atual de pontos e uma tabela com os agendamentos realizados, futuros ou cancelados. Permite visualização rápida e organizada do histórico de atendimentos.
+
+R04: Compra de Pontos – 1 ponto = R$ 5,00. Transações com registro de data/hora e descrição "COMPRA DE PONTOS".
+    O paciente pode adquirir pontos para obter descontos em consultas. Cada ponto custa R$ 5,00. As compras são registradas em um histórico de transações, com data/hora, valor em reais, quantidade de pontos e a descrição “COMPRA DE PONTOS”.
+
+R05: Agendar Consulta – Busca por especialidade e médico. Seleciona consulta, usa pontos para desconto, confirma pagamento. Código único de agendamento gerado. Status: CRIADO.
+    O paciente busca consultas disponíveis por especialidade e/ou profissional. Ao selecionar uma consulta, define quantos pontos usará para obter desconto, e o restante é pago em dinheiro. Após confirmação, o sistema registra o agendamento com um código único e status CRIADO.
+
+R06: Cancelar Agendamento – Permitido apenas se CRIADO ou CHECK-IN. Pontos devolvidos com histórico registrado.
+    Permite ao paciente cancelar agendamentos com status CRIADO ou CHECK-IN. Os pontos utilizados são devolvidos ao saldo, e o histórico registra a transação com a descrição “CANCELAMENTO DE AGENDAMENTO”.
+
+R07: Check-in – Disponível para consultas nas próximas 48h. Status muda para CHECK-IN.
+    Nas 48 horas anteriores à consulta, o paciente pode realizar o check-in, indicando que comparecerá. Isso atualiza o status do agendamento para CHECK-IN, permitindo que o funcionário confirme sua presença posteriormente.
+
+Perfil Funcionário
+
+R08: Tela Inicial do Funcionário – Lista consultas nas próximas 48h com botões para confirmar presença (R09), cancelar (R10) ou realizar (R11).
+    Mostra as consultas que ocorrerão nas próximas 48 horas, com ações disponíveis para cada uma: confirmar comparecimento, cancelar ou registrar como realizada.
+
+R09: Confirmar Comparecimento – Mediante código e status CHECK-IN. Altera para COMPARECEU.
+    O funcionário digita o código do agendamento para confirmar a presença do paciente. O agendamento deve estar no estado CHECK-IN. Após confirmação, o status é alterado para COMPARECEU.
+
+R10: Cancelar Consulta – Só possível se menos de 50% dos agendamentos estiverem confirmados. Status: CANCELADA. Agendamentos vinculados também são cancelados.
+    Permite ao funcionário cancelar uma consulta caso menos de 50% das vagas estejam ocupadas. Isso atualiza o status da consulta e de todos os agendamentos vinculados para CANCELADO, e os pontos são devolvidos aos pacientes.
+
+R11: Realizar Consulta – Marca consulta como REALIZADA. Quem não compareceu recebe status FALTOU.
+    Ao término da consulta, o funcionário marca a consulta como REALIZADA. Agendamentos no estado COMPARECEU passam a REALIZADO; os demais (sem check-in ou confirmação) são marcados como FALTOU.
+
+R12: Cadastro de Consulta – Data/hora, especialidade, médico, valor, vagas. Código gerado automaticamente. Status: DISPONÍVEL.
+    O funcionário pode cadastrar novas consultas, informando data/hora, médico responsável, especialidade, valor da consulta e número de vagas. O sistema gera um código único para cada consulta, que inicia com o status DISPONÍVEL.
+
+R13-R15: CRUD de Funcionário – Inserção, alteração (exceto CPF) e inativação (não exclusão).
+    Permite o cadastro de novos funcionários, com nome, CPF, e-mail e telefone. A senha é enviada por e-mail, gerada automaticamente. O CPF é único e o e-mail será utilizado para login.
+    Permite atualizar os dados do funcionário, com exceção do CPF. Essa funcionalidade facilita a manutenção das informações sem perder a identificação original.
+    Ao excluir um funcionário, seus dados não são apagados do sistema, apenas marcados como inativos. Isso preserva o histórico de operações realizadas pelo profissional.
+
