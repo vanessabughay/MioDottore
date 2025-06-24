@@ -22,6 +22,7 @@ export class ManageEmployeesComponent implements OnInit {
   error = '';
   selectedId: number | undefined;
   success: string = '';
+  isLoading = false;
 
    get invalidFields(): string[] {
     const fields: string[] = [];
@@ -80,15 +81,20 @@ export class ManageEmployeesComponent implements OnInit {
         error: () => this.error = 'Erro ao atualizar funcionário.'
       });
     } else {
+      this.isLoading = true;
       this.employeeService.criarFuncionario(payload).subscribe({
         next: (res) => {
+          this.isLoading = false;
           if (res?.senhaGerada) {
             this.dialog.open(ModalSenhaGerada, { data: { senha: res.senhaGerada } });
           }
           this.success = 'Funcionário criado com sucesso.';
           this.resetForm();
         },
-        error: () => this.error = 'Erro ao criar funcionário.'
+        error: () => {
+          this.isLoading = false;
+          this.error = 'Erro ao criar funcionário.';
+        }
       });
     }
   }

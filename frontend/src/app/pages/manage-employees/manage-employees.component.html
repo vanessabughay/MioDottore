@@ -1,4 +1,13 @@
 <div class="background"></div>
+
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Enviando e-mail de confirmação...</p>
+  </div>
+</div>
+
 <div class="manage-employees-page">
   <div class="manage-employees">
   <div class="header">

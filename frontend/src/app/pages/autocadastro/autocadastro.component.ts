@@ -19,6 +19,7 @@ import { ModalSenhaGerada } from '../../components/modal-senha-gerada/modal-senh
 export class AutocadastroComponent implements OnInit {
   form!: FormGroup;
   error = '';
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -55,15 +56,17 @@ export class AutocadastroComponent implements OnInit {
       cep: cepNumeros
     };
 
-        this.auth.autocadastroPaciente(dados).subscribe({
-
-            next: (res) => {
+    this.isLoading = true;
+    this.auth.autocadastroPaciente(dados).subscribe({
+      next: (res) => {
+        this.isLoading = false;
         if (res?.senhaGerada) {
           this.dialog.open(ModalSenhaGerada, { data: { senha: res.senhaGerada } });
         }
         this.router.navigate(['/login']);
       },
       error: () => {
+        this.isLoading = false;
         this.error = 'Erro ao criar conta.';
       }
     });
